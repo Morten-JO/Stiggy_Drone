@@ -3,27 +3,35 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
-import de.yadrone.apps.tutorial.TutorialAttitudeListener;
-import de.yadrone.apps.tutorial.TutorialCommander;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfRect;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.videoio.VideoCapture;
+
 import de.yadrone.apps.tutorial.TutorialVideoListener;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
-import de.yadrone.base.video.VideoManager;
+import org.opencv.imgcodecs.*;
 
 public class Main {
 	public static int speed = 20;
 	public static int index = 0;
 	public static BufferedImage img;
+	//public static VideoCapture capture;
+	
 	public static void main(String[] args) {
 		try
 		{
@@ -40,6 +48,7 @@ public class Main {
 			drone.start();
 			// Tutorial Section 2
 			//new TutorialAttitudeListener(drone);
+			 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 			
 			
 			
@@ -89,6 +98,42 @@ public class Main {
 						} catch (IOException l) {
 							l.printStackTrace();
 						}
+					    
+					    BufferedImage image = img;
+				        Mat gg = bufferedImageToMat(image);
+				  
+				        CascadeClassifier faceDetector = new CascadeClassifier("resources/lbpcascade_frontalface.xml");
+				        
+				        
+				        // Detect faces in the image.
+				        // MatOfRect is a special container class for Rect.
+				        MatOfRect faceDetections = new MatOfRect();
+				        faceDetector.detectMultiScale(gg, faceDetections);
+
+				        System.out.println(String.format("Detected %s faces", faceDetections.toArray().length));
+				        Mat noob = new Mat();
+				        Mat pleb = new Mat();
+				        
+				        Imgproc.cvtColor(gg, noob, Imgproc.COLOR_BGR2HSV);
+				        Imgproc.Canny(noob, pleb, 10,100,3,true);
+				       //Imgproc.HoughCircles(gg, circles, method, dp, minDist);
+				       Imgcodecs.imwrite("okmorten.png", pleb);
+				       
+				       
+				       Mat gray = new Mat();
+				       gg.copyTo(gray);
+				       Imgproc.cvtColor(gray,gray,Imgproc.COLOR_BGR2GRAY);
+				       Mat circles = new Mat();
+				       int minRadius = 1;
+				       int maxRadius = 18;
+				       Imgproc.HoughCircles(gray, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minRadius, 120, 10, minRadius, maxRadius);
+						System.out.println(circles);
+						 
+						Imgcodecs.imwrite("okmorten111.png", circles);
+						
+						
+				       
+				       
 					} else if(e.getKeyCode() == KeyEvent.VK_LEFT){
 						temp.getCommandManager().hover();
 						
@@ -133,6 +178,30 @@ public class Main {
 				}
 			});
 			
+//			VideoCapture capture = new VideoCapture();
+//			
+//			
+//			drone.getVideoManager().addImageListener(new ImageListener() {
+//			    public void imageUpdated(BufferedImage newImage)
+//			    {
+////			        BufferedImage image = newImage;
+////			        Mat gg = bufferedImageToMat(image);
+////			        MatOfRect faceD = new MatOfRect();
+////			        CascadeClassifier faceDetector = new CascadeClassifier(getClass().getResource("/FaceDetection.fxml").getPath());
+////			        
+////			        // Detect faces in the image.
+////			        // MatOfRect is a special container class for Rect.
+////			        MatOfRect faceDetections = new MatOfRect();
+////			        faceDetector.detectMultiScale(gg, faceDetections);
+////
+////			        System.out.println(String.format("Detected %s faces", faceDetections.toArray().length));
+//			    }
+//			});
+//			
+			//capture.open();
+			
+			
+			
 			// Tutorial Section 4
 //			TutorialCommander commander = new TutorialCommander(drone);
 //			commander.animateLEDs();
@@ -145,4 +214,11 @@ public class Main {
 		}
 	}
 	
+	public static Mat bufferedImageToMat(BufferedImage bi) {
+		  Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
+		  byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+		  mat.put(0, 0, data);
+		  return mat;
+		}
 }
+
