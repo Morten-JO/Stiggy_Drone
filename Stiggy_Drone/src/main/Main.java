@@ -3,11 +3,19 @@ package main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfRect;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.CascadeClassifier;
 
 import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
 import de.yadrone.apps.tutorial.TutorialAttitudeListener;
@@ -38,22 +46,28 @@ public class Main {
 			});
 			
 			drone.start();
+			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 			// Tutorial Section 2
 			//new TutorialAttitudeListener(drone);
+			VideoFrame vd = new VideoFrame();
+			JFrame showvd = new JFrame();
+			showvd.setSize(640, 720);
+			showvd.add(vd);
+			showvd.setVisible(true);
 			
 			
 			
 			// Tutorial Section 3
-			new TutorialVideoListener(drone);
+			//new TutorialVideoListener(drone);
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				
 				@Override
 				public void imageUpdated(BufferedImage arg0) {
-					img = arg0;
+					vd.update(arg0);
 				}
 			});
 			
-			JFrame frame = new JFrame();
+			/*JFrame frame = new JFrame();
 			frame.setSize(500, 500);
 			frame.setVisible(true);
 			frame.addKeyListener(new KeyListener() {
@@ -132,7 +146,7 @@ public class Main {
 					} 
 				}
 			});
-			
+			*/
 			// Tutorial Section 4
 //			TutorialCommander commander = new TutorialCommander(drone);
 //			commander.animateLEDs();
@@ -144,5 +158,24 @@ public class Main {
 			exc.printStackTrace();
 		}
 	}
+	
+	public static Mat bufferedImageToMat(BufferedImage bi) {
+		Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
+		byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+		mat.put(0, 0, data);
+		return mat;
+	}
+	
+	public static BufferedImage MatToBufferedImage(Mat m, int type){
+		// Create an empty image in matching format
+		BufferedImage gray = new BufferedImage(m.width(), m.height(), type);
+
+		// Get the BufferedImage's backing array and copy the pixels directly into it
+		byte[] data = ((DataBufferByte) gray.getRaster().getDataBuffer()).getData();
+		m.get(0, 0, data);
+		return gray;
+	}
+	
+	
 	
 }

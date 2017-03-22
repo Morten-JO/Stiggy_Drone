@@ -15,5 +15,10 @@
 	<classpathentry kind="lib" path="/home/morten/git/Stiggy_Drone/Stiggy_Drone/ext_jar/slf4j-api-1.7.2.jar"/>
 	<classpathentry kind="lib" path="/home/morten/git/Stiggy_Drone/Stiggy_Drone/ext_jar/slf4j-jdk14-1.7.2.jar"/>
 	<classpathentry kind="lib" path="/home/morten/git/Stiggy_Drone/Stiggy_Drone/ext_jar/xuggle-xuggler-5.4.jar"/>
+	<classpathentry kind="lib" path="/home/morten/Downloads/opencv-320.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/morten/Downloads/opencv-3.2.0"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
