@@ -16,15 +16,14 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
-<<<<<<< HEAD
 
 import de.yadrone.apps.controlcenter.plugins.keyboard.KeyboardCommandManager;
 import de.yadrone.apps.tutorial.TutorialAttitudeListener;
 import de.yadrone.apps.tutorial.TutorialCommander;
-=======
+
 import org.opencv.videoio.VideoCapture;
 
->>>>>>> master
+
 import de.yadrone.apps.tutorial.TutorialVideoListener;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
@@ -56,16 +55,15 @@ public class Main {
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 			// Tutorial Section 2
 			//new TutorialAttitudeListener(drone);
-<<<<<<< HEAD
+
 			VideoFrame vd = new VideoFrame();
 			JFrame showvd = new JFrame();
 			showvd.setSize(640, 720);
 			showvd.add(vd);
 			showvd.setVisible(true);
-=======
+
 			 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
->>>>>>> master
-			
+
 			
 			
 			// Tutorial Section 3
@@ -78,7 +76,7 @@ public class Main {
 				}
 			});
 			
-			/*JFrame frame = new JFrame();
+			JFrame frame = new JFrame();
 			frame.setSize(500, 500);
 			frame.setVisible(true);
 			frame.addKeyListener(new KeyListener() {
@@ -193,40 +191,24 @@ public class Main {
 					} 
 				}
 			});
-<<<<<<< HEAD
-			*/
-=======
+
 			
-//			VideoCapture capture = new VideoCapture();
-//			
-//			
-//			drone.getVideoManager().addImageListener(new ImageListener() {
-//			    public void imageUpdated(BufferedImage newImage)
-//			    {
-////			        BufferedImage image = newImage;
-////			        Mat gg = bufferedImageToMat(image);
-////			        MatOfRect faceD = new MatOfRect();
-////			        CascadeClassifier faceDetector = new CascadeClassifier(getClass().getResource("/FaceDetection.fxml").getPath());
-////			        
-////			        // Detect faces in the image.
-////			        // MatOfRect is a special container class for Rect.
-////			        MatOfRect faceDetections = new MatOfRect();
-////			        faceDetector.detectMultiScale(gg, faceDetections);
-////
-////			        System.out.println(String.format("Detected %s faces", faceDetections.toArray().length));
-//			    }
-//			});
-//			
+
+			
+			VideoCapture capture = new VideoCapture();
+			
+			
+			
+			
 			//capture.open();
 			
 			
-			
->>>>>>> master
+
 			// Tutorial Section 4
-//			TutorialCommander commander = new TutorialCommander(drone);
-//			commander.animateLEDs();
-//			commander.takeOffAndLand();
-//			commander.leftRightForwardBackward();
+			TutorialCommander commander = new TutorialCommander(drone);
+			commander.animateLEDs();
+			commander.takeOffAndLand();
+			commander.leftRightForwardBackward();
 		}
 		catch (Exception exc)
 		{
@@ -235,7 +217,7 @@ public class Main {
 	}
 	
 	public static Mat bufferedImageToMat(BufferedImage bi) {
-<<<<<<< HEAD
+
 		Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
 		byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
 		mat.put(0, 0, data);
@@ -254,12 +236,9 @@ public class Main {
 	
 	
 	
-=======
-		  Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
-		  byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
-		  mat.put(0, 0, data);
-		  return mat;
+
+	
 		}
->>>>>>> master
-}
+
+
 
