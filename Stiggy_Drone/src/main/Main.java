@@ -227,11 +227,159 @@ public class Main {
 		return gray;
 	}
 	
-	
+	/** canny
+	 * img = arg0;
+//					 nr++;
+//					 if(!(nr % 20 == 0)){
+//						 return ;
+//					 }		
+					BufferedImage image = img;
+			        Mat gg = bufferedImageToMat(image);
+//			  
+//			        CascadeClassifier faceDetector = new CascadeClassifier("resources/lbpcascade_frontalface.xml");
+//			        
+//			        
+//			        // Detect faces in the image.
+//			        // MatOfRect is a special container class for Rect.
+//			        MatOfRect faceDetections = new MatOfRect();
+//			        faceDetector.detectMultiScale(gg, faceDetections);
+//
+//			        System.out.println(String.format("Detected %s faces", faceDetections.toArray().length));
+			       
+			      
+				
+			        Mat gray = new Mat();
+			        Imgproc.cvtColor(gg, gray, Imgproc.COLOR_BGR2GRAY);
+			        Imgproc.blur(gray, gray, new Size(3, 3));
+
+			        Mat edges = new Mat();
+			        int lowThreshold = 40;
+			        int ratio = 3;
+			        Imgproc.Canny(gray, edges, lowThreshold, lowThreshold * ratio);
+
+			        Mat circles = new Mat();
+			        Vector<Mat> circlesList = new Vector<Mat>();
+
+			        Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 20, 30, 0 );
+			        System.out.println("#rows " + circles.rows() + " #cols " + circles.cols());
+			        double x = 0.0;
+			        double y = 0.0;
+			        int r = 0;
+
+			        for( int i = 0; i < circles.rows(); i++ )
+			        {
+			          double[] data = circles.get(i, 0);
+			          for(int j = 0 ; j < data.length ; j++){
+			               x = data[0];
+			               y = data[1];
+			               r = (int) data[2];
+			          }
+			          
+			          Point center = new Point(x,y);
+			          // circle center
+			          
+			          Imgproc.circle( gg, center, 3, new Scalar(0,255,0), -1);
+			          // circle outline
+			          Imgproc.circle( gg, center, r, new Scalar(0,0,255), 1);
+
+			        // Imshow im1 = new Imshow("Hough");
+			        // im1.showImage(gg); 
+
+			         Rect bbox = new Rect((int)Math.abs(x-r), (int)Math.abs(y-r), (int)2*r, (int)2*r);
+			         Mat croped_image = new Mat(gg, bbox);
+			         Imgproc.resize(croped_image, croped_image, new Size(160,160));
+			         circlesList.add(croped_image);
+			         //Imshow m2 = new Imshow("cropedImage");
+			         //m2.showImage(croped_image);
+			         Imgcodecs.imwrite("Testokmorten.png", croped_image);
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         
+			         File outputfile = new File("resources/saved"+index+".png");
+						index++;
+					    try {
+					    	
+							ImageIO.write(img, "png", outputfile);
+						} catch (IOException l) {
+							l.printStackTrace();
+						}
+					  
+					    
+					    BufferedImage image = img;
+				        Mat gg = bufferedImageToMat(image);
+				  
+				        CascadeClassifier faceDetector = new CascadeClassifier("resources/lbpcascade_frontalface.xml");
+				        
+				        
+				        // Detect faces in the image.
+				        // MatOfRect is a special container class for Rect.
+				        MatOfRect faceDetections = new MatOfRect();
+				        faceDetector.detectMultiScale(gg, faceDetections);
+
+				        System.out.println(String.format("Detected %s faces", faceDetections.toArray().length));
+				        Mat noob = new Mat();
+				        Mat pleb = new Mat();
+				        
+				        Imgproc.cvtColor(gg, noob, Imgproc.COLOR_BGR2HSV);
+				        Imgproc.Canny(noob, pleb, 10,100,3,true);
+				       //Imgproc.HoughCircles(gg, circles, method, dp, minDist);
+				       Imgcodecs.imwrite("okmorten.png", pleb);
+				       
+				       
+				       Mat gray = new Mat();
+				       gg.copyTo(gray);
+				       Imgproc.cvtColor(gray,gray,Imgproc.COLOR_BGR2GRAY);
+				       Mat circles = new Mat();
+				       int minRadius = 1;
+				       int maxRadius = 18;
+				       Imgproc.HoughCircles(gray, circles, Imgproc.CV_HOUGH_GRADIENT, 1, minRadius, 120, 10, minRadius, maxRadius);
+						System.out.println(circles);
+						 
+						Imgcodecs.imwrite("okmorten111.png", circles);
+	 * 
+	 */
 	
 
 	
-		}
+}
 
 
 
