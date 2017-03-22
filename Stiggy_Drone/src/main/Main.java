@@ -52,7 +52,7 @@ public class Main {
 			});
 			
 			drone.start();
-			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+			//System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 			// Tutorial Section 2
 			//new TutorialAttitudeListener(drone);
 
@@ -62,7 +62,7 @@ public class Main {
 			showvd.add(vd);
 			showvd.setVisible(true);
 
-			 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+			// System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
 			
 			
@@ -193,9 +193,6 @@ public class Main {
 			});
 
 			
-
-			
-			VideoCapture capture = new VideoCapture();
 			
 			
 			
@@ -204,11 +201,7 @@ public class Main {
 			
 			
 
-			// Tutorial Section 4
-			TutorialCommander commander = new TutorialCommander(drone);
-			commander.animateLEDs();
-			commander.takeOffAndLand();
-			commander.leftRightForwardBackward();
+			// Tutorial Section x
 		}
 		catch (Exception exc)
 		{

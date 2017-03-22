@@ -17,7 +17,8 @@ public class VideoFrame extends JPanel{
 	
 	public void update(BufferedImage img){
 		this.img = img;
-		doWhatever();
+		this.img2 = img;
+		//doWhatever();
 		repaint();
 	}
 	
