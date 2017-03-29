@@ -51,23 +51,17 @@ public class Main {
 				}
 			});
 			
+			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+			
 			drone.start();
-			//System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-			// Tutorial Section 2
-			//new TutorialAttitudeListener(drone);
-
+			
 			VideoFrame vd = new VideoFrame();
 			JFrame showvd = new JFrame();
+			showvd.setTitle("Video shower.");
 			showvd.setSize(640, 720);
 			showvd.add(vd);
 			showvd.setVisible(true);
-
-			// System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
 			
-			
-			// Tutorial Section 3
-			//new TutorialVideoListener(drone);
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				
 				@Override
@@ -77,6 +71,7 @@ public class Main {
 			});
 			
 			JFrame frame = new JFrame();
+			frame.setTitle("Control panel.");
 			frame.setSize(500, 500);
 			frame.setVisible(true);
 			frame.addKeyListener(new KeyListener() {
