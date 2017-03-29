@@ -20,22 +20,29 @@ public class VideoFrame extends JPanel{
 	private BufferedImage img;
 	private BufferedImage img2;
 	
+	private int count = 0;
+	private int threshold = 0;
+	private int ratio = 1;
+	private int relax = 0;
 	public void update(BufferedImage img){
 		this.img = img;
-		checkForCircle();
+		count++;
+		if(count > 0){
+			checkForCircle();
+			count = 0;
+		}
+		
+		
 		repaint();
 	}
 	
 	public void paintComponent(Graphics g) {
-	    if (img == null && img2 == null){
-	    	super.paintComponents(g);
-	    	return;
-	    }
+		super.paintComponents(g);
 	    if(img != null){
 	    	g.drawImage(img, 0, 0, this);
 	    }
 	    if(img2 != null){
-	    	g.drawImage(img2, 0, img.getHeight(), this);
+	    	g.drawImage(img2, 0, img.getHeight(), img.getWidth(), img.getHeight(), this);
 	    }
 	}
 	
@@ -47,13 +54,24 @@ public class VideoFrame extends JPanel{
 		    Imgproc.cvtColor(gg, gray, Imgproc.COLOR_BGR2GRAY);
 		    Imgproc.blur(gray, gray, new Size(3, 3));
 		    Mat edges = new Mat();
-		    int lowThreshold = 40;
-		    int ratio = 3;
+		    relax++;
+		    if(relax > 100){
+			    threshold += 5;
+			    System.out.println("New Threshold: "+this.threshold);
+			    relax = 0;
+		    }
+		    
+		    int lowThreshold = this.threshold;
+		    int ratio = 1;
 		    Imgproc.Canny(gray, edges, lowThreshold, lowThreshold * ratio);
 		    Mat circles = new Mat();
+		    //Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 20, 30, 0 );
+		    this.img2 = Main.MatToBufferedImage(edges, null);
+		    /*
+		    Mat circles = new Mat();
 		    Vector<Mat> circlesList = new Vector<Mat>();
-		    Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 20, 30, 0 );
-		    System.out.println("#rows " + circles.rows() + " #cols " + circles.cols());
+		    
+		  
 		    double x = 0.0;
 		    double y = 0.0;
 		    int r = 0;
@@ -72,7 +90,8 @@ public class VideoFrame extends JPanel{
 		    Mat croped_image = new Mat(gg, bbox);
 		    Imgproc.resize(croped_image, croped_image, new Size(160,160));
 		    circlesList.add(croped_image);
-		    this.img2 = Main.MatToBufferedImage(croped_image, BufferedImage.TYPE_BYTE_GRAY);
+		    this.img2 = Main.MatToBufferedImage(croped_image, null);
+		    */
 		}
 	}
 }

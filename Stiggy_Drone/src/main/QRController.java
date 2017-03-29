@@ -12,10 +12,12 @@ public class QRController  {
 		
 		ResultPoint[] points = res.getResultPoints();
 		
+		
 		for (int i = 0; i < points.length; i++){
 			
 			System.out.println(points[i]);
 		}
+		System.out.println("There are" + points.length + " points");
 	}
 
 }
