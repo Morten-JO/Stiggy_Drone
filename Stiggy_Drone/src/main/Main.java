@@ -36,6 +36,8 @@ public class Main {
 	public static int speed = 20;
 	public static int index = 0;
 	public static BufferedImage img;
+	static QRClass qrCode;
+	static QRController qrControl;
 	//public static VideoCapture capture;
 	
 	public static void main(String[] args) {
@@ -44,6 +46,8 @@ public class Main {
 			// Tutorial Section 1
 			
 			IARDrone drone = new ARDrone();
+			qrCode = new QRClass();
+			qrControl = new QRController();
 			drone.addExceptionListener(new IExceptionListener() {
 				public void exeptionOccurred(ARDroneException exc)
 				{
@@ -66,7 +70,16 @@ public class Main {
 				
 				@Override
 				public void imageUpdated(BufferedImage arg0) {
-					vd.update(arg0);
+					
+				vd.update(arg0);
+				try{
+					qrControl.printCoordinates(qrCode.getResult(arg0));
+				}
+				catch(Exception e){
+					
+					
+				}
+					
 				}
 			});
 			
@@ -287,46 +300,7 @@ public class Main {
 			         //Imshow m2 = new Imshow("cropedImage");
 			         //m2.showImage(croped_image);
 			         Imgcodecs.imwrite("Testokmorten.png", croped_image);
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
-			         
+		
 			         
 			         File outputfile = new File("resources/saved"+index+".png");
 						index++;
