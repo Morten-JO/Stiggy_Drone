@@ -74,7 +74,7 @@ public class VideoFrame extends JPanel{
 		    int lowThreshold = this.threshold;
 		    int ratio = 1;
 		    Imgproc.Canny(gray, edges, lowThreshold, lowThreshold * ratio);
-		    //Mat circles = new Mat();
+		    Mat circles = new Mat();
 		    Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 20, 30, 0 );
 		    
 		    FeatureDetector detector = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
@@ -90,12 +90,9 @@ public class VideoFrame extends JPanel{
 		    if(points.length > 0){
 		    	//System.out.println("KeyPOINTS!");
 			    for(int i = 0; i < points.length; i++){
-<<<<<<< HEAD
 			    	this.points.add(points[i]);
 			    	//System.out.println("Point #"+i+": "+points[i].pt.x+","+points[i].pt.y);
-=======
-			    	//System.out.println("Point #"+i+": "+points[i].pt.x+","+po	ints[i].pt.y);
->>>>>>> branch 'master' of https://github.com/Mortenbaws/Stiggy_Drone.git
+
 			    }
 			    //System.out.println();
 		    }
