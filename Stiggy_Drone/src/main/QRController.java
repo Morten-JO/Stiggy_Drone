@@ -42,18 +42,24 @@ public class QRController  {
 		if (x < (imgCenterX - Values.TOLERANCE))
 		{
 			System.out.println("PaperChaseAutoController: Go left");
+
+			drone.getCommandManager().goLeft(Values.SPEED).doFor(100);
+			drone.getCommandManager().hover();
 //			drone.getCommandManager().goLeft(Values.SPEED);
 //			Thread.currentThread().sleep(Values.SLEEP);
 		}
 		else if (x > (imgCenterX + Values.TOLERANCE))
 		{
 			System.out.println("PaperChaseAutoController: Go right");
+			drone.getCommandManager().goRight(Values.SPEED).doFor(100);
+			drone.getCommandManager().hover();
 //			drone.getCommandManager().goRight(Values.SPEED);
 //			Thread.currentThread().sleep(Values.SLEEP);
 		}
 		else if (y < (imgCenterY - Values.TOLERANCE))
 		{
 			System.out.println("PaperChaseAutoController: Go forward");
+			
 //			drone.getCommandManager().forward(Values.SPEED);
 //			Thread.currentThread().sleep(Values.SLEEP);
 		}

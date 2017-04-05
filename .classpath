@@ -17,8 +17,8 @@
 	<classpathentry kind="lib" path="Stiggy_Drone/ext_jar/reflections-0.9.9-RC1.jar"/>
 	<classpathentry kind="lib" path="Stiggy_Drone/ext_jar/slf4j-api-1.7.2.jar"/>
 	<classpathentry kind="lib" path="Stiggy_Drone/ext_jar/slf4j-jdk14-1.7.2.jar"/>
-	<classpathentry kind="lib" path="Stiggy_Drone/ext_jar/xuggle-xuggler-5.4.jar"/>
-	<classpathentry kind="lib" path="Stiggy_Drone/ext_jar/YADrone.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-3.2.0"/>
+	<classpathentry kind="lib" path="C:/Users/Magnus/Downloads/xuggle-xuggler-5.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Magnus/Downloads/yadrone_032.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
