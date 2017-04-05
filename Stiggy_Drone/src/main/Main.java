@@ -81,8 +81,8 @@ public class Main {
 					if(preventLagCounter % 15 == 0){
 				
 				try{
-					qrControl.printCoordinates(qrCode.getResult(arg0));
-					qrControl.centerTag(qrCode.getResult(arg0), drone);
+					//qrControl.printCoordinates(qrCode.getResult(arg0));
+					//qrControl.centerTag(qrCode.getResult(arg0), drone);
 				}
 				catch(Exception e){
 					e.printStackTrace();

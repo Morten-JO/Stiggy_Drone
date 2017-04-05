@@ -1,7 +1,10 @@
 package main;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -27,10 +30,16 @@ public class VideoFrame extends JPanel{
 	private int threshold = 140;
 	private int ratio = 1;
 	private int relax = 0;
+	private List<KeyPoint> points;
+	
+	public VideoFrame(){
+		points = new ArrayList<KeyPoint>();
+	}
+	
 	public void update(BufferedImage img){
 		this.img = img;
 		count++;
-		if(count > 15){
+		if(count > 10){
 			checkForCircle();
 			count = 0;
 		}
@@ -46,6 +55,11 @@ public class VideoFrame extends JPanel{
 	    }
 	    if(img2 != null){
 	    	g.drawImage(img2, 0, img.getHeight(), img.getWidth(), img.getHeight(), this);
+	    	g.setColor(Color.RED);
+	    	for(int i = 0 ; i < this.points.size(); i++){
+	    		double size = 2 * points.get(i).size;
+	    		g.drawOval((int)points.get(i).pt.x - (int)(0.5f * size), (int)points.get(i).pt.y - (int)(0.5f * size), (int)size, (int)size);
+	    	}
 	    }
 	}
 	
@@ -60,9 +74,11 @@ public class VideoFrame extends JPanel{
 		    int lowThreshold = this.threshold;
 		    int ratio = 1;
 		    Imgproc.Canny(gray, edges, lowThreshold, lowThreshold * ratio);
-		    Mat circles = new Mat();
+		    //Mat circles = new Mat();
 		    //Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 20, 30, 0 );
+		    
 		    FeatureDetector detector = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
+		    detector.read("whatevs.xml");
 		    MatOfKeyPoint keypoints = new MatOfKeyPoint();
 		    detector.detect(edges, keypoints);
 		    Mat out = new Mat();
@@ -70,13 +86,16 @@ public class VideoFrame extends JPanel{
 		    org.opencv.features2d.Features2d.drawKeypoints(edges, keypoints, out);
 		    this.img2 = Main.MatToBufferedImage(out, null);
 		    KeyPoint[] points = keypoints.toArray();
+		    this.points.clear();
 		    if(points.length > 0){
-		    	System.out.println("KeyPOINTS!");
+		    	//System.out.println("KeyPOINTS!");
 			    for(int i = 0; i < points.length; i++){
-			    	System.out.println("Point #"+i+": "+points[i].pt.x+","+points[i].pt.y);
+			    	this.points.add(points[i]);
+			    	//System.out.println("Point #"+i+": "+points[i].pt.x+","+points[i].pt.y);
 			    }
-			    System.out.println();
+			    //System.out.println();
 		    }
+		    
 		    
 		    
 		    
