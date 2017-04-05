@@ -26,55 +26,57 @@ public class QRController  {
 	
 	public void centerTag(Result tag, ARDrone drone) throws InterruptedException
 	{
-		String tagText;
-		ResultPoint[] points;
-		
-			points = tag.getResultPoints();	
-			tagText = tag.getText();
-		
-		
-		int imgCenterX = Values.IMAGE_WIDTH / 2;
-		int imgCenterY = Values.IMAGE_HEIGHT / 2;
-		
-		float x = points[1].getX();
-		float y = points[1].getY();
-		
-		if (x < (imgCenterX - Values.TOLERANCE))
-		{
-			System.out.println("PaperChaseAutoController: Go left");
+		if(!Main.userControl){
+			String tagText;
+			ResultPoint[] points;
+			
+				points = tag.getResultPoints();	
+				tagText = tag.getText();
+			
+			
+			int imgCenterX = Values.IMAGE_WIDTH / 2;
+			int imgCenterY = Values.IMAGE_HEIGHT / 2;
+			
+			float x = points[1].getX();
+			float y = points[1].getY();
+			
+			if (x < (imgCenterX - Values.TOLERANCE))
+			{
+				System.out.println("PaperChaseAutoController: Go left");
 
-			drone.getCommandManager().goLeft(Values.SPEED).doFor(100);
-			drone.getCommandManager().hover();
-//			drone.getCommandManager().goLeft(Values.SPEED);
-//			Thread.currentThread().sleep(Values.SLEEP);
-		}
-		else if (x > (imgCenterX + Values.TOLERANCE))
-		{
-			System.out.println("PaperChaseAutoController: Go right");
-			drone.getCommandManager().goRight(Values.SPEED).doFor(100);
-			drone.getCommandManager().hover();
-//			drone.getCommandManager().goRight(Values.SPEED);
-//			Thread.currentThread().sleep(Values.SLEEP);
-		}
-		else if (y < (imgCenterY - Values.TOLERANCE))
-		{
-			System.out.println("PaperChaseAutoController: Go forward");
-			
-//			drone.getCommandManager().forward(Values.SPEED);
-//			Thread.currentThread().sleep(Values.SLEEP);
-		}
-		else if (y > (imgCenterY + Values.TOLERANCE))
-		{
-			System.out.println("PaperChaseAutoController: Go backward");
-//			drone.getCommandManager().backward(Values.SPEED);
-//			Thread.currentThread().sleep(Values.SLEEP);
-		}
-		else
-		{
-			System.out.println("PaperChaseAutoController: Tag centered");
-			drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_GREEN, 10, 5);
-			
-			
+				drone.getCommandManager().goLeft(Values.SPEED).doFor(100);
+				drone.getCommandManager().hover();
+//				drone.getCommandManager().goLeft(Values.SPEED);
+//				Thread.currentThread().sleep(Values.SLEEP);
+			}
+			else if (x > (imgCenterX + Values.TOLERANCE))
+			{
+				System.out.println("PaperChaseAutoController: Go right");
+				drone.getCommandManager().goRight(Values.SPEED).doFor(100);
+				drone.getCommandManager().hover();
+//				drone.getCommandManager().goRight(Values.SPEED);
+//				Thread.currentThread().sleep(Values.SLEEP);
+			}
+			else if (y < (imgCenterY - Values.TOLERANCE))
+			{
+				System.out.println("PaperChaseAutoController: Go forward");
+				
+//				drone.getCommandManager().forward(Values.SPEED);
+//				Thread.currentThread().sleep(Values.SLEEP);
+			}
+			else if (y > (imgCenterY + Values.TOLERANCE))
+			{
+				System.out.println("PaperChaseAutoController: Go backward");
+//				drone.getCommandManager().backward(Values.SPEED);
+//				Thread.currentThread().sleep(Values.SLEEP);
+			}
+			else
+			{
+				System.out.println("PaperChaseAutoController: Tag centered");
+				drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_GREEN, 10, 5);
+				
+				
+			}
 		}
 	}
 

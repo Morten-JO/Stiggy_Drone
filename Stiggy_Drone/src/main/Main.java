@@ -42,6 +42,7 @@ public class Main {
 	static QRClass qrCode;
 	static QRController qrControl;
 	public static int preventLagCounter = 0;
+	public static boolean userControl = false;
 	//public static VideoCapture capture;
 	
 	public static void main(String[] args) {
@@ -86,7 +87,6 @@ public class Main {
 				catch(Exception e){
 					e.printStackTrace();
 					System.out.println("error reading");
-					
 				}
 				
 					}
@@ -217,7 +217,10 @@ public class Main {
 						temp.getCommandManager().hover();
 					} else if(e.getKeyCode() == KeyEvent.VK_W){
 						temp.getCommandManager().hover();
-					} 
+					} else if(e.getKeyCode() == KeyEvent.VK_Q){
+						userControl = !userControl;
+					}
+				
 				}
 				
 				@Override
