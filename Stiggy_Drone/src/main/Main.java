@@ -2,6 +2,8 @@ package main;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -27,6 +29,7 @@ import org.opencv.videoio.VideoCapture;
 import de.yadrone.apps.tutorial.TutorialVideoListener;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
+import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
@@ -38,6 +41,7 @@ public class Main {
 	public static BufferedImage img;
 	static QRClass qrCode;
 	static QRController qrControl;
+	public static int preventLagCounter = 0;
 	//public static VideoCapture capture;
 	
 	public static void main(String[] args) {
@@ -45,7 +49,7 @@ public class Main {
 		{
 			// Tutorial Section 1
 			
-			IARDrone drone = new ARDrone();
+			ARDrone drone = new ARDrone();
 			qrCode = new QRClass();
 			qrControl = new QRController();
 			drone.addExceptionListener(new IExceptionListener() {
@@ -60,6 +64,7 @@ public class Main {
 			drone.start();
 			
 			VideoFrame vd = new VideoFrame();
+			
 			JFrame showvd = new JFrame();
 			showvd.setTitle("Video shower.");
 			showvd.setSize(640, 720);
@@ -70,16 +75,22 @@ public class Main {
 				
 				@Override
 				public void imageUpdated(BufferedImage arg0) {
-					
-				vd.update(arg0);
+					preventLagCounter++;
+						
+					if(preventLagCounter % 15 == 0){
+				
 				try{
 					qrControl.printCoordinates(qrCode.getResult(arg0));
+					qrControl.centerTag(qrCode.getResult(arg0), drone);
 				}
 				catch(Exception e){
-					
+					e.printStackTrace();
+					System.out.println("error reading");
 					
 				}
-					
+				
+					}
+					vd.update(arg0);
 				}
 			});
 			
@@ -87,6 +98,39 @@ public class Main {
 			frame.setTitle("Control panel.");
 			frame.setSize(500, 500);
 			frame.setVisible(true);
+			frame.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseReleased(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+				drone.getCommandManager().setVideoChannel(VideoChannel.NEXT);
+					
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
 			frame.addKeyListener(new KeyListener() {
 				
 				@Override
