@@ -75,7 +75,7 @@ public class VideoFrame extends JPanel{
 		    int ratio = 1;
 		    Imgproc.Canny(gray, edges, lowThreshold, lowThreshold * ratio);
 		    //Mat circles = new Mat();
-		    //Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 20, 30, 0 );
+		    Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 20, 30, 0 );
 		    
 		    FeatureDetector detector = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
 		    detector.read("whatevs.xml");
