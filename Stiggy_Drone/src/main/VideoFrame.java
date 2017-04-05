@@ -71,9 +71,9 @@ public class VideoFrame extends JPanel{
 		    this.img2 = Main.MatToBufferedImage(out, null);
 		    KeyPoint[] points = keypoints.toArray();
 		    if(points.length > 0){
-		    	System.out.println("KeyPOINTS!");
+		    	//System.out.println("KeyPOINTS!");
 			    for(int i = 0; i < points.length; i++){
-			    	System.out.println("Point #"+i+": "+points[i].pt.x+","+points[i].pt.y);
+			    	//System.out.println("Point #"+i+": "+points[i].pt.x+","+po	ints[i].pt.y);
 			    }
 			    System.out.println();
 		    }

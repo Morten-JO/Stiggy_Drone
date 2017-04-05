@@ -44,15 +44,17 @@ public class QRController  {
 			{
 				System.out.println("PaperChaseAutoController: Go left");
 
-				drone.getCommandManager().goLeft(Values.SPEED).doFor(100);
+				drone.getCommandManager().goLeft(Values.SPEED).doFor(Values.DOTIME+25);
 				drone.getCommandManager().hover();
 //				drone.getCommandManager().goLeft(Values.SPEED);
 //				Thread.currentThread().sleep(Values.SLEEP);
 			}
+		
+		
 			else if (x > (imgCenterX + Values.TOLERANCE))
 			{
 				System.out.println("PaperChaseAutoController: Go right");
-				drone.getCommandManager().goRight(Values.SPEED).doFor(100);
+				drone.getCommandManager().goRight(Values.SPEED).doFor(Values.DOTIME+25);
 				drone.getCommandManager().hover();
 //				drone.getCommandManager().goRight(Values.SPEED);
 //				Thread.currentThread().sleep(Values.SLEEP);
@@ -60,6 +62,25 @@ public class QRController  {
 			else if (y < (imgCenterY - Values.TOLERANCE))
 			{
 				System.out.println("PaperChaseAutoController: Go forward");
+				if (y < (imgCenterY - Values.TOLERANCE))
+				{
+					System.out.println("PaperChaseAutoController: Go Down");
+
+					drone.getCommandManager().down(Values.SPEED).doFor(Values.DOTIME);
+					drone.getCommandManager().hover();
+//					drone.getCommandManager().goLeft(Values.SPEED);
+//					Thread.currentThread().sleep(Values.SLEEP);
+				}
+				if (y > (imgCenterY - Values.TOLERANCE))
+				{
+					System.out.println("PaperChaseAutoController: Go Up");
+
+					drone.getCommandManager().up(Values.SPEED).doFor(Values.DOTIME);
+					drone.getCommandManager().hover();
+//					drone.getCommandManager().goLeft(Values.SPEED);
+//					Thread.currentThread().sleep(Values.SLEEP);
+					
+				}
 				
 //				drone.getCommandManager().forward(Values.SPEED);
 //				Thread.currentThread().sleep(Values.SLEEP);
