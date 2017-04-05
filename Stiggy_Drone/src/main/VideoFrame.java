@@ -6,12 +6,15 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
@@ -21,13 +24,13 @@ public class VideoFrame extends JPanel{
 	private BufferedImage img2;
 	
 	private int count = 0;
-	private int threshold = 0;
+	private int threshold = 140;
 	private int ratio = 1;
 	private int relax = 0;
 	public void update(BufferedImage img){
 		this.img = img;
 		count++;
-		if(count > 0){
+		if(count > 15){
 			checkForCircle();
 			count = 0;
 		}
@@ -54,19 +57,29 @@ public class VideoFrame extends JPanel{
 		    Imgproc.cvtColor(gg, gray, Imgproc.COLOR_BGR2GRAY);
 		    Imgproc.blur(gray, gray, new Size(3, 3));
 		    Mat edges = new Mat();
-		    relax++;
-		    if(relax > 100){
-			    threshold += 5;
-			    System.out.println("New Threshold: "+this.threshold);
-			    relax = 0;
-		    }
-		    
 		    int lowThreshold = this.threshold;
 		    int ratio = 1;
 		    Imgproc.Canny(gray, edges, lowThreshold, lowThreshold * ratio);
 		    Mat circles = new Mat();
 		    //Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 60, 200, 20, 30, 0 );
-		    this.img2 = Main.MatToBufferedImage(edges, null);
+		    FeatureDetector detector = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
+		    MatOfKeyPoint keypoints = new MatOfKeyPoint();
+		    detector.detect(edges, keypoints);
+		    Mat out = new Mat();
+		    org.opencv.core.Scalar cores = new org.opencv.core.Scalar(0, 255, 0);
+		    org.opencv.features2d.Features2d.drawKeypoints(edges, keypoints, out);
+		    this.img2 = Main.MatToBufferedImage(out, null);
+		    KeyPoint[] points = keypoints.toArray();
+		    if(points.length > 0){
+		    	System.out.println("KeyPOINTS!");
+			    for(int i = 0; i < points.length; i++){
+			    	System.out.println("Point #"+i+": "+points[i].pt.x+","+points[i].pt.y);
+			    }
+			    System.out.println();
+		    }
+		    
+		    
+		    
 		    /*
 		    Mat circles = new Mat();
 		    Vector<Mat> circlesList = new Vector<Mat>();
