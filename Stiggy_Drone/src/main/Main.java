@@ -32,6 +32,7 @@ import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
+import de.yadrone.base.navdata.BatteryListener;
 import de.yadrone.base.video.ImageListener;
 import org.opencv.imgcodecs.*;
 
@@ -78,7 +79,7 @@ public class Main {
 				public void imageUpdated(BufferedImage arg0) {
 					preventLagCounter++;
 						
-					if(preventLagCounter % 15 == 0){
+					if(preventLagCounter % 25 == 0){
 				
 				try{
 					//qrControl.printCoordinates(qrCode.getResult(arg0));
@@ -151,6 +152,7 @@ public class Main {
 						System.out.println("Landing");
 						temp.getCommandManager().landing();
 						
+						
 					} else if(e.getKeyCode() == KeyEvent.VK_Y){
 						speed += 10;
 					} else if(e.getKeyCode() == KeyEvent.VK_H){
@@ -164,6 +166,8 @@ public class Main {
 						} catch (IOException l) {
 							l.printStackTrace();
 						}
+					    
+					    
 					    
 					    BufferedImage image = img;
 				        Mat gg = bufferedImageToMat(image);
@@ -217,8 +221,26 @@ public class Main {
 						temp.getCommandManager().hover();
 					} else if(e.getKeyCode() == KeyEvent.VK_W){
 						temp.getCommandManager().hover();
-					} else if(e.getKeyCode() == KeyEvent.VK_Q){
+					}
+					else if(e.getKeyCode() == KeyEvent.VK_E){
+						temp.getNavDataManager().addBatteryListener(new BatteryListener() {
+							
+							@Override
+							public void voltageChanged(int arg0) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void batteryLevelChanged(int arg0) {
+								System.out.println("Battery currently at " + arg0 + "%");
+								
+							}
+						});;
+						
+					}else if(e.getKeyCode() == KeyEvent.VK_Q){
 						userControl = !userControl;
+						System.out.println("User control = " + userControl);
 					}
 				
 				}
@@ -241,6 +263,7 @@ public class Main {
 						temp.getCommandManager().down(speed);
 					} else if(e.getKeyCode() == KeyEvent.VK_D){
 						temp.getCommandManager().spinRight(70);
+						
 					} else if(e.getKeyCode() == KeyEvent.VK_W){
 						temp.getCommandManager().up(speed);
 					} 

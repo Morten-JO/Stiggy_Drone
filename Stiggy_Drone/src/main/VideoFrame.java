@@ -90,8 +90,12 @@ public class VideoFrame extends JPanel{
 		    if(points.length > 0){
 		    	//System.out.println("KeyPOINTS!");
 			    for(int i = 0; i < points.length; i++){
+<<<<<<< HEAD
 			    	this.points.add(points[i]);
 			    	//System.out.println("Point #"+i+": "+points[i].pt.x+","+points[i].pt.y);
+=======
+			    	//System.out.println("Point #"+i+": "+points[i].pt.x+","+po	ints[i].pt.y);
+>>>>>>> branch 'master' of https://github.com/Mortenbaws/Stiggy_Drone.git
 			    }
 			    //System.out.println();
 		    }
