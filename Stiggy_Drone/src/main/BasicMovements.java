@@ -86,4 +86,8 @@ public class BasicMovements {
 	public int getSpeed(){
 		return speed;
 	}
+	
+	public IARDrone getDrone(){
+		return drone;
+	}
 }
