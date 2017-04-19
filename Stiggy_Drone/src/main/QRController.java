@@ -53,15 +53,16 @@ public class QRController  {
 			
 			float x = points[1].getX();
 			float y = points[1].getY();
+			Thread.currentThread().sleep(1000);
 			
 			if (x < (imgCenterX - Values.TOLERANCE))
 			{
 				System.out.println("PaperChaseAutoController: Go left");
 
-				drone.getCommandManager().goLeft(Values.SPEED).doFor(Values.DOTIME+25);
+				drone.getCommandManager().goLeft(Values.SPEED).doFor(Values.DOTIME);
 				drone.getCommandManager().hover();
 //				drone.getCommandManager().goLeft(Values.SPEED);
-				Thread.currentThread().sleep(Values.DOTIME+25);
+//				Thread.currentThread().sleep(Values.DOTIME+25);
 				return false;
 			}
 		
@@ -69,10 +70,10 @@ public class QRController  {
 			else if (x > (imgCenterX + Values.TOLERANCE))
 			{
 				System.out.println("PaperChaseAutoController: Go right");
-				drone.getCommandManager().goRight(Values.SPEED).doFor(Values.DOTIME+25);
+				drone.getCommandManager().goRight(Values.SPEED).doFor(Values.DOTIME);
 				drone.getCommandManager().hover();
 //				drone.getCommandManager().goRight(Values.SPEED);
-				Thread.currentThread().sleep(Values.DOTIME+25);
+				//				Thread.currentThread().sleep(Values.DOTIME+25);
 				return false;
 			}
 			else if (y < (imgCenterY - Values.TOLERANCE))
@@ -86,7 +87,7 @@ public class QRController  {
 					drone.getCommandManager().hover();
 					
 //					drone.getCommandManager().goLeft(Values.SPEED);
-					Thread.currentThread().sleep(Values.DOTIME);
+					//					Thread.currentThread().sleep(Values.DOTIME);
 					return false;
 				}
 				if (y > (imgCenterY - Values.TOLERANCE))
@@ -96,7 +97,7 @@ public class QRController  {
 					drone.getCommandManager().up(Values.SPEED).doFor(Values.DOTIME);
 					drone.getCommandManager().hover();
 //					drone.getCommandManager().goLeft(Values.SPEED);
-					Thread.currentThread().sleep(Values.DOTIME);
+					//					Thread.currentThread().sleep(Values.DOTIME);
 					return false;
 					
 				}
