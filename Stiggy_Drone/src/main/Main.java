@@ -25,7 +25,6 @@ import de.yadrone.apps.tutorial.TutorialCommander;
 
 import org.opencv.videoio.VideoCapture;
 
-
 import de.yadrone.apps.tutorial.TutorialVideoListener;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
@@ -43,7 +42,7 @@ public class Main {
 	static QRClass qrCode;
 	static QRController qrControl;
 	public static int preventLagCounter = 0;
-	public static boolean userControl = false;
+	public static boolean userControl = true;
 	//public static VideoCapture capture;
 	
 	public static void main(String[] args) {
@@ -66,13 +65,14 @@ public class Main {
 			drone.start();
 			
 			VideoFrame vd = new VideoFrame();
-			
+			ColoredObjectTrack g = new ColoredObjectTrack();
 			JFrame showvd = new JFrame();
 			showvd.setTitle("Video shower.");
 			showvd.setSize(640, 720);
 			showvd.add(vd);
 			showvd.setVisible(true);
 			BasicController control = new BasicController(drone);
+			control.start();
 			
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				
@@ -80,18 +80,22 @@ public class Main {
 				public void imageUpdated(BufferedImage arg0) {
 					preventLagCounter++;
 						
-					if(preventLagCounter % 25 == 0){
+					if(preventLagCounter % 5 == 0){
 				
 				try{
-					qrControl.printCoordinates(qrCode.getResult(arg0));
-					qrControl.centerDrone(arg0, drone);
+					vd.updateImageTwo(Main.MatToBufferedImage(g.getCircle(arg0), null));
+					//qrControl.printCoordinates(qrCode.getResult(arg0));
+					//qrControl.centerDrone(arg0, drone);
 				}
 				catch(Exception e){
 					e.printStackTrace();
 					System.out.println("error reading");
 				}
 					}
+					control.updateImg(arg0);
 					vd.update(arg0);
+					
+					
 				}
 			});
 			
@@ -269,7 +273,6 @@ public class Main {
 					} 
 				}
 			});
-
 			
 			
 			

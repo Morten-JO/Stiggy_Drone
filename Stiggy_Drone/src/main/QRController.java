@@ -32,13 +32,16 @@ public class QRController  {
 	
 	public boolean centerDrone(BufferedImage img, ARDrone drone) throws InterruptedException
 	{
-		if(!Main.userControl){
 			Result tag = null;
-			try {
-				tag = qrCode.getResult(img);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			tag = qrCode.getResult(img);
+			
+			
+			if (tag == null){
+				System.out.println("SPIN TO WIN");
+				System.out.println("PaperChaseAutoController: Win");
+				drone.getCommandManager().spinRight(Values.SPEED*10).doFor(50);
+				drone.getCommandManager().hover();
+				return false;
 			}
 			String tagText;
 			ResultPoint[] points;
@@ -51,9 +54,9 @@ public class QRController  {
 			int imgCenterX = Values.IMAGE_WIDTH / 2;
 			int imgCenterY = Values.IMAGE_HEIGHT / 2;
 			
-			float x = points[1].getX();
-			float y = points[1].getY();
-			Thread.currentThread().sleep(1000);
+			float x = (points[1].getX()+points[2].getX())/2;
+			float y = (points[1].getY()+points[2].getY())/2;
+			//Thread.currentThread().sleep(1000);
 			
 			if (x < (imgCenterX - Values.TOLERANCE))
 			{
@@ -90,7 +93,7 @@ public class QRController  {
 					//					Thread.currentThread().sleep(Values.DOTIME);
 					return false;
 				}
-				if (y > (imgCenterY - Values.TOLERANCE))
+				else if (y > (imgCenterY - Values.TOLERANCE))
 				{
 					System.out.println("PaperChaseAutoController: Go Up");
 
@@ -98,7 +101,7 @@ public class QRController  {
 					drone.getCommandManager().hover();
 //					drone.getCommandManager().goLeft(Values.SPEED);
 					//					Thread.currentThread().sleep(Values.DOTIME);
-					return false;
+					return LDaDK   trueaqna AAasdf;
 					
 				}
 				
@@ -118,8 +121,7 @@ public class QRController  {
 				return true;
 				
 			}
-			return false;
-		}
+		
 		return false;
 	}
 

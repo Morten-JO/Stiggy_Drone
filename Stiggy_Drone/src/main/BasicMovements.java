@@ -1,13 +1,14 @@
 package main;
 
+import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 
 public class BasicMovements {
 
-	private IARDrone drone;
+	private ARDrone drone;
 	private int speed;
 	
-	public BasicMovements(IARDrone drone){
+	public BasicMovements(ARDrone drone){
 		this.drone = drone;
 	}
 	
@@ -87,7 +88,7 @@ public class BasicMovements {
 		return speed;
 	}
 	
-	public IARDrone getDrone(){
+	public ARDrone getDrone(){
 		return drone;
 	}
 }

@@ -23,21 +23,13 @@ public class QRClass {
 		LuminanceSource source = new BufferedImageLuminanceSource(img);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 		
-		QRCodeReader reader = new QRCodeReader();
+		MultiFormatReader reader = new MultiFormatReader();
 		
 			try {
 				result = reader.decode(bitmap);
 			} catch (NotFoundException e) {
 				
-				e.printStackTrace();
-				return null;
-			} catch (ChecksumException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return null;
-			} catch (FormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("NOT FOUND EXCEPTION INDEED:"+e.getStackTrace());
 				return null;
 			}
 		
