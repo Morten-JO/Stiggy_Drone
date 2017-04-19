@@ -18,14 +18,28 @@ public class QRClass {
 	Result result;
 
 	
-	public Result getResult(BufferedImage img) throws Exception{
+	public Result getResult(BufferedImage img){
 		
 		LuminanceSource source = new BufferedImageLuminanceSource(img);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 		
 		QRCodeReader reader = new QRCodeReader();
 		
-			result = reader.decode(bitmap);
+			try {
+				result = reader.decode(bitmap);
+			} catch (NotFoundException e) {
+				
+				e.printStackTrace();
+				return null;
+			} catch (ChecksumException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			} catch (FormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
 		
 		
 		return result;

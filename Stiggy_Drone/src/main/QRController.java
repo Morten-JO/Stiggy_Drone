@@ -30,7 +30,7 @@ public class QRController  {
 		System.out.println("Top line is " +  (points[2].getX()-points[1].getX())+ " pixels" );
 	}
 	
-	public void centerDrone(BufferedImage img, ARDrone drone) throws InterruptedException
+	public boolean centerDrone(BufferedImage img, ARDrone drone) throws InterruptedException
 	{
 		if(!Main.userControl){
 			Result tag = null;
@@ -53,25 +53,28 @@ public class QRController  {
 			
 			float x = points[1].getX();
 			float y = points[1].getY();
+			Thread.currentThread().sleep(1000);
 			
 			if (x < (imgCenterX - Values.TOLERANCE))
 			{
 				System.out.println("PaperChaseAutoController: Go left");
 
-				drone.getCommandManager().goLeft(Values.SPEED).doFor(Values.DOTIME+25);
+				drone.getCommandManager().goLeft(Values.SPEED).doFor(Values.DOTIME);
 				drone.getCommandManager().hover();
 //				drone.getCommandManager().goLeft(Values.SPEED);
-				Thread.currentThread().sleep(Values.DOTIME+25);
+//				Thread.currentThread().sleep(Values.DOTIME+25);
+				return false;
 			}
 		
 		
 			else if (x > (imgCenterX + Values.TOLERANCE))
 			{
 				System.out.println("PaperChaseAutoController: Go right");
-				drone.getCommandManager().goRight(Values.SPEED).doFor(Values.DOTIME+25);
+				drone.getCommandManager().goRight(Values.SPEED).doFor(Values.DOTIME);
 				drone.getCommandManager().hover();
 //				drone.getCommandManager().goRight(Values.SPEED);
-				Thread.currentThread().sleep(Values.DOTIME+25);
+				//				Thread.currentThread().sleep(Values.DOTIME+25);
+				return false;
 			}
 			else if (y < (imgCenterY - Values.TOLERANCE))
 			{
@@ -84,7 +87,8 @@ public class QRController  {
 					drone.getCommandManager().hover();
 					
 //					drone.getCommandManager().goLeft(Values.SPEED);
-					Thread.currentThread().sleep(Values.DOTIME);
+					//					Thread.currentThread().sleep(Values.DOTIME);
+					return false;
 				}
 				if (y > (imgCenterY - Values.TOLERANCE))
 				{
@@ -93,7 +97,8 @@ public class QRController  {
 					drone.getCommandManager().up(Values.SPEED).doFor(Values.DOTIME);
 					drone.getCommandManager().hover();
 //					drone.getCommandManager().goLeft(Values.SPEED);
-					Thread.currentThread().sleep(Values.DOTIME);
+					//					Thread.currentThread().sleep(Values.DOTIME);
+					return false;
 					
 				}
 				
@@ -110,10 +115,12 @@ public class QRController  {
 			{
 				System.out.println("PaperChaseAutoController: Tag centered");
 				drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_GREEN, 10, 5);
-				
+				return true;
 				
 			}
+			return false;
 		}
+		return false;
 	}
 
 }
