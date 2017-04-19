@@ -32,7 +32,20 @@ public class branner {
 		        : ((mat.channels() == 4) ? Imgproc.COLOR_BGRA2GRAY : 1);
 
 		Mat grayMat = new Mat();
+		Mat thresholded = new Mat();
+		Mat hsv_image = new Mat();
+		 Scalar hsv_min = new Scalar(0, 30, 20);  
+		    Scalar hsv_max = new Scalar(0, 255, 255);
+		    Scalar hsv_min2 = new Scalar(170, 70, 50, 0);  
+		    Scalar hsv_max2 = new Scalar(180, 255, 255, 0); 
+		    Mat thresholded2 = new Mat();
 		Imgproc.cvtColor(mat, grayMat, colorChannels);
+		Imgproc.cvtColor(mat, hsv_image, Imgproc.COLOR_BGR2HSV);  
+        Core.inRange(hsv_image, hsv_min, hsv_max, thresholded);  
+        Core.inRange(hsv_image, hsv_min2, hsv_max2, thresholded2);  
+        Core.bitwise_or(thresholded, thresholded2, thresholded);
+        
+       
 
 		/* reduce the noise so we avoid false circle detection */
 		Imgproc.GaussianBlur(grayMat, grayMat, new Size(9, 9), 2, 2);
@@ -62,6 +75,9 @@ public class branner {
 		Imgproc.HoughCircles(grayMat, circles,
 		        Imgproc.CV_HOUGH_GRADIENT, dp, minDist, param1,
 		        param2, minRadius, maxRadius);
+		
+		 Imgproc.HoughCircles(thresholded, circles, Imgproc.CV_HOUGH_GRADIENT, 2, thresholded.height()/4, 500, 50, 0, 0);   
+	        
 
 		/* get the number of circles detected */
 		int numberOfCircles = (circles.rows() == 0) ? 0 : circles.cols();
@@ -96,7 +112,7 @@ System.out.println("Center" + center);
 		}
 
 	      
-		return mat;   
+		return thresholded;   
 }
 	
 	 public static Mat bufferedImageToMat(BufferedImage bi) {
