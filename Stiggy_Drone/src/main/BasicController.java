@@ -28,7 +28,7 @@ public class BasicController implements Runnable {
 	
 	private BufferedImage imgi;
 	
-	public static int currentState = SEARCHQR;
+	public static int currentState = ONGROUND;
 	
 	private int alti = 1;
 	private int oldalti;

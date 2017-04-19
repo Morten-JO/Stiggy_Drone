@@ -41,6 +41,7 @@ public class QRController  {
 				System.out.println("PaperChaseAutoController: Win");
 				drone.getCommandManager().spinRight(Values.SPEED*10).doFor(50);
 				drone.getCommandManager().hover();
+				Thread.currentThread().sleep(50);
 				return false;
 			}
 			String tagText;
@@ -101,7 +102,7 @@ public class QRController  {
 					drone.getCommandManager().hover();
 //					drone.getCommandManager().goLeft(Values.SPEED);
 					//					Thread.currentThread().sleep(Values.DOTIME);
-					return LDaDK   trueaqna AAasdf;
+					return true;
 					
 				}
 				
