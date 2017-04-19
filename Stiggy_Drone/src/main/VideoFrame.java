@@ -48,6 +48,11 @@ public class VideoFrame extends JPanel{
 		repaint();
 	}
 	
+	public void updateImageTwo(BufferedImage img){
+		this.img2 = img;
+		repaint();
+	}
+	
 	public void paintComponent(Graphics g) {
 		super.paintComponents(g);
 	    if(img != null){

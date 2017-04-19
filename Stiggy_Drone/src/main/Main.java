@@ -72,6 +72,7 @@ public class Main {
 			showvd.setSize(640, 720);
 			showvd.add(vd);
 			showvd.setVisible(true);
+			BasicController control = new BasicController(drone);
 			
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				
@@ -89,7 +90,6 @@ public class Main {
 					e.printStackTrace();
 					System.out.println("error reading");
 				}
-				
 					}
 					vd.update(arg0);
 				}
