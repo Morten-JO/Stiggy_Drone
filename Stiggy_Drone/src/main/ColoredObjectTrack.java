@@ -1,7 +1,8 @@
-package BrannerAlgorithm;
+package main;
 
 import java.awt.Graphics;  
-import java.awt.image.BufferedImage;  
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.util.ArrayList;  
 import java.util.List;  
 import javax.swing.JFrame;  
@@ -40,7 +41,7 @@ class Panel extends JPanel{
    * Converts/writes a Mat into a BufferedImage.  
    *  
    * @param matrix Mat of type CV_8UC3 or CV_8UC1  
-   * @return BufferedImage of type TYPE_3BYTE_BGR or TYPE_BYTE_GRAY  
+   * @return BufferedImage of type TYPE_3BYTE_BGR or TYPE_BYTE_GRAY gg 
    */  
   public BufferedImage matToBufferedImage(Mat matrix) {  
     int cols = matrix.cols();  
@@ -81,51 +82,21 @@ class Panel extends JPanel{
   }  
 }  
 public class ColoredObjectTrack {  
-  public void getCircle(Mat image){  
+  public Mat getCircle(BufferedImage image){  
+	Mat img =  bufferedImageToMat(image);
     // Load the native library.  
 	  System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     // It is better to group all frames together so cut and paste to  
     // create more frames is easier  
-    JFrame frame1 = new JFrame("Camera");  
-    frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-    frame1.setSize(640,480);  
-    frame1.setBounds(0, 0, frame1.getWidth(), frame1.getHeight());  
-    Panel panel1 = new Panel();  
-    frame1.setContentPane(panel1);  
-    frame1.setVisible(true);  
-    JFrame frame2 = new JFrame("HSV");  
-    frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-    frame2.setSize(640,480);  
-    frame2.setBounds(300,100, frame2.getWidth()+300, 100+frame2.getHeight());  
-    Panel panel2 = new Panel();  
-    frame2.setContentPane(panel2);  
-    frame2.setVisible(true);  
-    JFrame frame3 = new JFrame("S,V Distance");  
-    frame3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-    frame3.setSize(640,480);  
-    frame3.setBounds(600,200, frame3.getWidth()+600, 200+frame3.getHeight());  
-    Panel panel3 = new Panel();  
-    frame3.setContentPane(panel3);  
-    frame3.setVisible(true);  
-    JFrame frame4 = new JFrame("Threshold");  
-    frame4.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-    frame4.setSize(640,480);  
-    frame4.setBounds(900,300, frame3.getWidth()+900, 300+frame3.getHeight());  
-    Panel panel4 = new Panel();  
-    frame4.setContentPane(panel4);      
-    frame4.setVisible(true);  
+    
     //-- 2. Read the video stream  
-    org.opencv.videoio.VideoCapture capture = new org.opencv.videoio.VideoCapture(0);
+    //org.opencv.videoio.VideoCapture capture = new org.opencv.videoio.VideoCapture(0);
       
-    Mat webcam_image= image ;  
+    Mat webcam_image= img;  
     Mat hsv_image=new Mat();  
     Mat thresholded=new Mat();  
     Mat thresholded2=new Mat();  
-   //  capture.read(webcam_image);  
-     frame1.setSize(webcam_image.width()+40,webcam_image.height()+60);  
-     frame2.setSize(webcam_image.width()+40,webcam_image.height()+60);  
-     frame3.setSize(webcam_image.width()+40,webcam_image.height()+60);  
-     frame4.setSize(webcam_image.width()+40,webcam_image.height()+60);  
+     //capture.read(webcam_image);  
     Mat array255=new Mat(webcam_image.height(),webcam_image.width(),CvType.CV_8UC1);  
     array255.setTo(new Scalar(255));  
     /*Mat S=new Mat();  
@@ -144,13 +115,7 @@ public class ColoredObjectTrack {
     Scalar hsv_min2 = new Scalar(170, 70, 50, 0);  
     Scalar hsv_max2 = new Scalar(180, 255, 255, 0);   
     double[] data=new double[3];  
-    if( capture.isOpened())  
-    {  
-     while( true )  
-     {  
-       capture.read(webcam_image);  
-       if( !webcam_image.empty() )  
-        {  
+    
          // One way to select a range of colors by Hue  
          Imgproc.cvtColor(webcam_image, hsv_image, Imgproc.COLOR_BGR2HSV);  
          Core.inRange(hsv_image, hsv_min, hsv_max, thresholded);           
@@ -212,24 +177,15 @@ public class ColoredObjectTrack {
          Imgproc.putText(distance,String.format("("+String.valueOf(data[0])+")"),new Point(30, 30) , 3 //FONT_HERSHEY_SCRIPT_SIMPLEX  
               ,1.0,new Scalar(100),3);   
          //-- 5. Display the image  
-         panel1.setimagewithMat(webcam_image);  
-           panel2.setimagewithMat(hsv_image);  
-         //panel2.setimagewithMat(S);  
-           //distance.convertTo(distance, CvType.CV_8UC1);  
-           panel3.setimagewithMat(distance);  
-          panel4.setimagewithMat(thresholded);  
-           frame1.repaint();  
-           frame2.repaint();  
-           frame3.repaint();  
-         frame4.repaint();  
-        }  
-        else  
-        {  
-          System.out.println(" --(!) No captured frame -- Break!");  
-          break;  
-        }  
-       }  
-      }  
-    return;  
-  }  
+        
+    return webcam_image ;  
+    
+  }
+  public static Mat bufferedImageToMat(BufferedImage bi) {
+	  Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
+	  byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+	  mat.put(0, 0, data);
+	  return mat;
+	}
+  
 } 
