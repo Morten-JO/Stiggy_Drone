@@ -25,6 +25,7 @@ import de.yadrone.apps.tutorial.TutorialCommander;
 
 import org.opencv.videoio.VideoCapture;
 
+import BrannerAlgorithm.branner;
 import de.yadrone.apps.tutorial.TutorialVideoListener;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
@@ -65,7 +66,8 @@ public class Main {
 			drone.start();
 			
 			VideoFrame vd = new VideoFrame();
-			ColoredObjectTrack g = new ColoredObjectTrack();
+			branner franner = new branner();
+			//ColoredObjectTrack g = new ColoredObjectTrack();
 			JFrame showvd = new JFrame();
 			showvd.setTitle("Video shower.");
 			showvd.setSize(640, 720);
@@ -83,7 +85,7 @@ public class Main {
 					if(preventLagCounter % 5 == 0){
 				
 				try{
-					vd.updateImageTwo(Main.MatToBufferedImage(g.getCircle(arg0), null));
+					vd.updateImageTwo(Main.MatToBufferedImage(franner.getBranner(arg0), null));
 					//qrControl.printCoordinates(qrCode.getResult(arg0));
 					//qrControl.centerDrone(arg0, drone);
 				}

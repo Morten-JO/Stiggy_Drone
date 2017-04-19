@@ -101,7 +101,7 @@ public class QRController  {
 					drone.getCommandManager().hover();
 //					drone.getCommandManager().goLeft(Values.SPEED);
 					//					Thread.currentThread().sleep(Values.DOTIME);
-					return LDaDK   trueaqna AAasdf;
+					return true;
 					
 				}
 				
