@@ -52,8 +52,8 @@ public class Main {
 			// Tutorial Section 1
 			
 			ARDrone drone = new ARDrone();
-			qrCode = new QRClass();
-			qrControl = new QRController();
+			
+			
 			drone.addExceptionListener(new IExceptionListener() {
 				public void exeptionOccurred(ARDroneException exc)
 				{
@@ -82,8 +82,8 @@ public class Main {
 					if(preventLagCounter % 25 == 0){
 				
 				try{
-					//qrControl.printCoordinates(qrCode.getResult(arg0));
-					//qrControl.centerTag(qrCode.getResult(arg0), drone);
+					qrControl.printCoordinates(qrCode.getResult(arg0));
+					qrControl.centerDrone(arg0, drone);
 				}
 				catch(Exception e){
 					e.printStackTrace();
