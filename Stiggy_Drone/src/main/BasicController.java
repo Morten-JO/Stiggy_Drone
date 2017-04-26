@@ -8,6 +8,7 @@ import org.opencv.core.KeyPoint;
 
 import com.google.zxing.Result;
 
+import de.yadrone.apps.paperchase.QRCodeScanner;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.navdata.Altitude;
@@ -145,83 +146,15 @@ public class BasicController implements Runnable {
 							}
 							KeyPoint point = Hjorten.checkForCircle(imgi);
 							if(point != null){
-								System.out.println("I FOUND THE FUCKING CIRCLE");
-								if(point.pt.x > 350){
-									movement.getDrone().getCommandManager().goRight(35);
-									try {
-										Thread.sleep(100);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									movement.getDrone().getCommandManager().hover();
-									try {
-										Thread.sleep(50);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-								} else if(point.pt.x < 290){
-									movement.getDrone().getCommandManager().goLeft(35);
-									try {
-										Thread.sleep(100);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									movement.getDrone().getCommandManager().hover();
-									try {
-										Thread.sleep(50);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-								} else if(point.pt.y > 210){
-									movement.getDrone().getCommandManager().up(35);
-									try {
-										Thread.sleep(80);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									movement.getDrone().getCommandManager().hover();
-									try {
-										Thread.sleep(50);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-								} else if(point.pt.y < 150){
-									movement.getDrone().getCommandManager().down(5);
-									try {
-										Thread.sleep(20);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									movement.getDrone().getCommandManager().hover();
-									try {
-										Thread.sleep(50);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-								}
-								if((point.pt.x) > 290 && (point.pt.x) < 350){
-									if((point.pt.y) < 210 && (point.pt.y ) > 150){
-										System.out.println("WE GOING FORWARD NOW BOIS!");
-										movement.getDrone().getCommandManager().forward(30);
-										try {
-											Thread.sleep(5000);
-										} catch (InterruptedException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
-										movement.getDrone().getCommandManager().hover();
-										this.currentState = ERROR;
-									}
+								CircleARObject obj = new CircleARObject();
+								obj.horizontal = point.pt.x;
+								obj.vertical = point.pt.y;
+								if(obj.moveBasedOnLocation(movement.getDrone())){
+									this.currentState = ERROR; // just to land
 								}
 							}
+							
+							
 							break;
 						case FLYTHROUGH:
 							movement.getDrone().getCommandManager().forward(20);
