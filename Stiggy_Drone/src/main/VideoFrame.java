@@ -49,6 +49,29 @@ public class VideoFrame extends JPanel{
 	    if(img2 != null){
 	    	g.drawImage(img2, 0, img.getHeight(), img.getWidth(), img.getHeight(), this);
 	    }
+	    g.setColor(Color.RED);
+	    g.drawString("Current State: "+this.getNameOfState(), 10, 10);
+	}
+	
+	private String getNameOfState(){
+		switch(BasicController.currentState){
+		case 1:
+			return "On Ground";
+		case 2:
+			return "In Air";
+		case 3:
+			return "Search QR";
+		case 6:
+			return "Branner";
+		case 7:
+			return "Hjorten";
+		case 8:
+			return "Flythrough";
+		case 9:
+			return "CheckFlown";
+		default:
+			return "Error";
+		}
 	}
 	
 	

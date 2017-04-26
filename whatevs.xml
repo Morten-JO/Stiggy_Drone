@@ -12,12 +12,12 @@
 <minArea>30</minArea>
 <maxArea>50000.</maxArea>
 <filterByCircularity>0</filterByCircularity>
-<minCircularity>2.0000001192092896e-01</minCircularity>
+<minCircularity>2.000001192092896e-01</minCircularity>
 <maxCircularity>15.4028234663852886e+38</maxCircularity>
 <filterByInertia>0</filterByInertia>
-<minInertiaRatio>1.0000000149011612e-01</minInertiaRatio>
-<maxInertiaRatio>3.4028234663852886e+38</maxInertiaRatio>
+<minInertiaRatio>0.5000000149011612e-01</minInertiaRatio>
+<maxInertiaRatio>75.4028234663852886e+38</maxInertiaRatio>
 <filterByConvexity>1</filterByConvexity>
-<minConvexity>9.4999998807907104e-01</minConvexity>
-<maxConvexity>3.4028234663852886e+38</maxConvexity>
+<minConvexity>2.4999998807907104e-01</minConvexity>
+<maxConvexity>10.4028234663852886e+38</maxConvexity>
 </opencv_storage>

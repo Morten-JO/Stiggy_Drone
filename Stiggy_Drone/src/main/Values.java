@@ -3,7 +3,7 @@ package main;
 public class Values {
 	
 
-	public final static int SPEED = 5;
+	public final static int SPEED = 2;
 	public final static int DOTIME = 200;
 	public final static int SLEEP = 500;
 	public final static int IMAGE_WIDTH = 640;
