@@ -2,6 +2,12 @@ package main;
 
 import java.awt.image.BufferedImage;
 
+import javax.swing.text.html.HTML.Tag;
+
+import org.opencv.core.KeyPoint;
+
+import com.google.zxing.Result;
+
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.navdata.Altitude;
@@ -25,7 +31,7 @@ public class BasicController implements Runnable {
 	public static final int CHECKFLOWN = 9;
 	public static final int ERROR = 37;
 	//States end
-	
+	private BufferedImage imgi2;
 	private BufferedImage imgi;
 	
 	public static int currentState = ONGROUND;
@@ -34,6 +40,8 @@ public class BasicController implements Runnable {
 	private int oldalti;
 	
 	private int tries = 0;
+	
+	public boolean imageUpdated = false;
 	
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
@@ -54,6 +62,7 @@ public class BasicController implements Runnable {
 	
 	public void updateImg(BufferedImage img1){
 		this.imgi = img1;
+		imageUpdated = true;
 	}
 	
 	public void start(){
@@ -72,71 +81,176 @@ public class BasicController implements Runnable {
 			movement.goUp(500);
 		}
 	}
+	
+	public BufferedImage getImigi2(){
+		return imgi2;
+	}
 
 	@Override
 	public void run() {
 		while(running){
 			if(Main.userControl == false){
-				switch(currentState){
-					case ONGROUND:
-						System.out.println("ONGROUND");
-						movement.getDrone().getCommandManager().takeOff();
-						oldalti = alti;
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-						currentState = INAIR;
-						break;
-					case INAIR:
-						tries++;
-						System.out.println("INAIR");
-						if(oldalti != alti){
-							currentState = SEARCHQR;
-							tries = 0;
-						} else{
+				if(imageUpdated){
+					switch(currentState){
+						case ONGROUND:
+							movement.getDrone().getCommandManager().takeOff();
+							oldalti = alti;
 							try {
-								Thread.sleep(1000);
+								Thread.sleep(5000);
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
+							}
+							currentState = INAIR;
+							
+							break;
+						case INAIR:
+							tries++;
+							if(oldalti != alti){
+								currentState = HJORTEN;
+								tries = 0;
+							} else{
+								try {
+									Thread.sleep(1000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+							if(tries > 4){
+								currentState = ONGROUND;
+							}
+							break;
+						case SEARCHQR:
+							tries++;
+							if(tries > 15){
+								tries = 0;
+								try {
+									if(troller.centerDrone(imgi,movement.getDrone())){
+										currentState = BRANNER;
+									}
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+							break;
+						case BRANNER:
+							movement.getDrone().getCommandManager().landing();
+							break;
+						case HJORTEN:
+							movement.getDrone().getCommandManager().hover();
+							try {
+								Thread.sleep(200);
+							} catch (InterruptedException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							KeyPoint point = Hjorten.checkForCircle(imgi);
+							if(point != null){
+								System.out.println("I FOUND THE FUCKING CIRCLE");
+								if(point.pt.x > 350){
+									movement.getDrone().getCommandManager().goRight(35);
+									try {
+										Thread.sleep(100);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									movement.getDrone().getCommandManager().hover();
+									try {
+										Thread.sleep(50);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								} else if(point.pt.x < 290){
+									movement.getDrone().getCommandManager().goLeft(35);
+									try {
+										Thread.sleep(100);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									movement.getDrone().getCommandManager().hover();
+									try {
+										Thread.sleep(50);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								} else if(point.pt.y > 210){
+									movement.getDrone().getCommandManager().up(35);
+									try {
+										Thread.sleep(80);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									movement.getDrone().getCommandManager().hover();
+									try {
+										Thread.sleep(50);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								} else if(point.pt.y < 150){
+									movement.getDrone().getCommandManager().down(5);
+									try {
+										Thread.sleep(20);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									movement.getDrone().getCommandManager().hover();
+									try {
+										Thread.sleep(50);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+								if((point.pt.x) > 290 && (point.pt.x) < 350){
+									if((point.pt.y) < 210 && (point.pt.y ) > 150){
+										System.out.println("WE GOING FORWARD NOW BOIS!");
+										movement.getDrone().getCommandManager().forward(30);
+										try {
+											Thread.sleep(5000);
+										} catch (InterruptedException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+										movement.getDrone().getCommandManager().hover();
+										this.currentState = ERROR;
+									}
+								}
+							}
+							break;
+						case FLYTHROUGH:
+							movement.getDrone().getCommandManager().forward(20);
+							try {
+								Thread.sleep(500);
 							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-						}
-						if(tries > 4){
-							currentState = ONGROUND;
-						}
-						//check if in air and standing still
-						break;
-					case SEARCHQR:
-						System.out.println("SEARCHQR");
-						try {
-							if(troller.centerDrone(imgi,movement.getDrone())){
-								currentState = BRANNER;
-							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						break;
-					case BRANNER:
-						System.out.println("GOT TO BRANNER");
-						movement.getDrone().getCommandManager().landing();
-						break;
-					case HJORTEN:
-						
-						break;
-					case FLYTHROUGH:
-						
-						break;
-					case CHECKFLOWN:
-						
-						break;
-					case ERROR:
-						
-						break;
-					default:
-						
-						break;
+							movement.getDrone().getCommandManager().hover();
+							break;
+						case CHECKFLOWN:
+							
+							break;
+						case ERROR:
+							movement.getDrone().getCommandManager().landing();
+							break;
+						default:
+							
+							break;
+					}
+					imageUpdated = false;
+				} else{
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			} else{
 				try {

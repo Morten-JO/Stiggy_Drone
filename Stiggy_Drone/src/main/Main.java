@@ -44,6 +44,7 @@ public class Main {
 	static QRController qrControl;
 	public static int preventLagCounter = 0;
 	public static boolean userControl = true;
+	
 	//public static VideoCapture capture;
 	
 	public static void main(String[] args) {
@@ -82,10 +83,10 @@ public class Main {
 				public void imageUpdated(BufferedImage arg0) {
 					preventLagCounter++;
 						
-					if(preventLagCounter % 5 == 0){
+					if(preventLagCounter % 25 == 0){
 				
 				try{
-					vd.updateImageTwo(Main.MatToBufferedImage(franner.getBranner(arg0), null));
+					//vd.updateImageTwo(Main.MatToBufferedImage(franner.getBranner(arg0), null));
 					//qrControl.printCoordinates(qrCode.getResult(arg0));
 					//qrControl.centerDrone(arg0, drone);
 				}
@@ -96,6 +97,7 @@ public class Main {
 					}
 					control.updateImg(arg0);
 					vd.update(arg0);
+					vd.updateImageTwo(control.getImigi2());
 					
 					
 				}
@@ -272,7 +274,9 @@ public class Main {
 						
 					} else if(e.getKeyCode() == KeyEvent.VK_W){
 						temp.getCommandManager().up(speed);
-					} 
+					} else if(e.getKeyCode() == KeyEvent.VK_O){
+						control.currentState = BasicController.ONGROUND;
+					}
 				}
 			});
 			
@@ -329,7 +333,12 @@ public class Main {
 
 	        // Reuse existing BufferedImage if possible
 	        if (bimg == null || bimg.getWidth() != cols || bimg.getHeight() != rows || bimg.getType() != type) {
-	            bimg = new BufferedImage(cols, rows, type);
+	        	if(cols > 1 && rows > 1){
+	        		bimg = new BufferedImage(cols, rows, type);
+	        	} else{
+	        		bimg = new BufferedImage(1,1,type);
+	        	}
+	            
 	        }        
 	        bimg.getRaster().setDataElements(0, 0, cols, rows, data);
 	    } else { // mat was null

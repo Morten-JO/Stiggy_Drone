@@ -24,7 +24,6 @@ public class branner {
 	public Mat getBranner(BufferedImage image){ 
 		Mat img =  bufferedImageToMat(image);
 		
-		
 		Mat mat = img;
 
 		/* convert to grayscale */
@@ -32,18 +31,9 @@ public class branner {
 		        : ((mat.channels() == 4) ? Imgproc.COLOR_BGRA2GRAY : 1);
 
 		Mat grayMat = new Mat();
-		Mat thresholded = new Mat();
-		Mat hsv_image = new Mat();
-		 Scalar hsv_min = new Scalar(0, 30, 20);  
-		    Scalar hsv_max = new Scalar(0, 255, 255);
-		    Scalar hsv_min2 = new Scalar(170, 70, 50, 0);  
-		    Scalar hsv_max2 = new Scalar(180, 255, 255, 0); 
-		    Mat thresholded2 = new Mat();
+		;
 		Imgproc.cvtColor(mat, grayMat, colorChannels);
-		Imgproc.cvtColor(mat, hsv_image, Imgproc.COLOR_BGR2HSV);  
-        Core.inRange(hsv_image, hsv_min, hsv_max, thresholded);  
-        Core.inRange(hsv_image, hsv_min2, hsv_max2, thresholded2);  
-        Core.bitwise_or(thresholded, thresholded2, thresholded);
+		
         
        
 
@@ -56,7 +46,7 @@ public class branner {
 		double minDist = 100;
 
 		// min and max radii (set these values as you desire)
-		int minRadius = 0, maxRadius = 0;
+		int minRadius = 50, maxRadius = 0;
 
 		// param1 = gradient value used to handle edge detection
 		// param2 = Accumulator threshold value for the
@@ -76,7 +66,7 @@ public class branner {
 		        Imgproc.CV_HOUGH_GRADIENT, dp, minDist, param1,
 		        param2, minRadius, maxRadius);
 		
-		 Imgproc.HoughCircles(thresholded, circles, Imgproc.CV_HOUGH_GRADIENT, 2, thresholded.height()/4, 500, 50, 0, 0);   
+		   
 	        
 
 		/* get the number of circles detected */
@@ -103,7 +93,7 @@ public class branner {
 		            255, 0), 4);
 		    
 System.out.println("Radius" + radius);
-System.out.println("Center" + center);
+
 
 		    /* circle's center outline */
 		    Imgproc.rectangle(mat, new Point(x - 5, y - 5),
@@ -112,7 +102,7 @@ System.out.println("Center" + center);
 		}
 
 	      
-		return thresholded;   
+		return mat;   
 }
 	
 	 public static Mat bufferedImageToMat(BufferedImage bi) {
