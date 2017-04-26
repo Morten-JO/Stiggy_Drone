@@ -15,27 +15,12 @@ import com.google.zxing.qrcode.QRCodeReader;
 
 public class QRClass {
 	
-	Result result;
-
+	QRCodeScanner scanner = new QRCodeScanner();
 	
-	public Result getResult(BufferedImage img){
+	//public Result getResult(BufferedImage img){
 		
-		LuminanceSource source = new BufferedImageLuminanceSource(img);
-		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-		
-		MultiFormatReader reader = new MultiFormatReader();
-		
-			try {
-				result = reader.decode(bitmap);
-			} catch (NotFoundException e) {
-				
-				System.out.println("NOT FOUND EXCEPTION INDEED:"+e.getStackTrace());
-				return null;
-			}
-		
-		
-		return result;
+		//return scanner.imageUpdated(img);
 				
 	}
 	
-}
+//}

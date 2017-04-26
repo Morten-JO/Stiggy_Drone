@@ -33,7 +33,7 @@ public class QRController  {
 	public boolean centerDrone(BufferedImage img, ARDrone drone) throws InterruptedException
 	{
 			Result tag = null;
-			tag = qrCode.getResult(img);
+			//tag = qrCode.getResult(img);
 			
 			
 			if (tag == null){

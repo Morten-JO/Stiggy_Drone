@@ -12,8 +12,9 @@ public class BasicController implements Runnable {
 
 	private BasicMovements movement;
 	private Thread thread;
-	private QRController troller;
+	private QRCodeScanner troller;
 	private boolean running = true;
+	private ARDrone drone = null;
 	
 	//States
 	public static final int ONGROUND = 1;
@@ -28,7 +29,7 @@ public class BasicController implements Runnable {
 	
 	private BufferedImage imgi;
 	
-	public static int currentState = ONGROUND;
+	public static int currentState = SEARCHQR;
 	
 	private int alti = 1;
 	private int oldalti;
@@ -36,8 +37,9 @@ public class BasicController implements Runnable {
 	private int tries = 0;
 	
 	public BasicController(ARDrone drone){
+		this.drone = drone ;
 		this.movement = new BasicMovements(drone);
-		troller = new QRController();
+		troller = new QRCodeScanner();
 		drone.getNavDataManager().addAltitudeListener(new AltitudeListener() {
 			
 			@Override
@@ -111,10 +113,12 @@ public class BasicController implements Runnable {
 					case SEARCHQR:
 						System.out.println("SEARCHQR");
 						try {
-							if(troller.centerDrone(imgi,movement.getDrone())){
-								currentState = BRANNER;
+							if(true){
+								boolean jensen = troller.applyFilters(Main.bufferedImageToMat(imgi),drone);
+								System.out.println(jensen);
+								//currentState = BRANNER;
 							}
-						} catch (InterruptedException e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 						break;

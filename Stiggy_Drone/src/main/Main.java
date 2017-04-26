@@ -34,6 +34,8 @@ import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.navdata.BatteryListener;
 import de.yadrone.base.video.ImageListener;
+import de.yadrone.base.video.VideoManager;
+
 import org.opencv.imgcodecs.*;
 
 public class Main {
