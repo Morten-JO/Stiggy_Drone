@@ -2,11 +2,14 @@ package main;
 
 
 
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import com.google.zxing.BinaryBitmap;
@@ -36,6 +39,7 @@ public class QRCodeScanner
 		for (int i = 1; i < 15; i++) {
 			qrText = imageUpdated(frame,i);
 			if(qrText.length()<3){
+				System.out.println("IM S PLRBN XSNMF ");
 //				Log.writeLog("ID på switch ved return: "+i);
 				continue;
 			} else {
@@ -43,8 +47,8 @@ public class QRCodeScanner
 				qrt = qrText;
 				System.out.println("Result fre QR er : " + qrText);
 				try {
-					return centerDrone(res, drone);
-				} catch (InterruptedException e) {
+					return false;
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -150,7 +154,7 @@ public class QRCodeScanner
 		return false;
 	}
 	public String imageUpdated(Mat frame, int i){
-		String qrt = null;
+		String qrt = "";
 		Mat temp = new Mat();
 		frame.copyTo(temp);
 		switch (i) {
@@ -228,6 +232,7 @@ public class QRCodeScanner
 			x = (int) (x/result.getResultPoints().length);
 			y = (int) (y/result.getResultPoints().length);
 			qrt += "," + x + "," + y;
+			
 		} catch (NotFoundException e) {
 		} catch (ChecksumException e) {
 		} catch (FormatException e) {

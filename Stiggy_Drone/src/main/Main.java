@@ -16,6 +16,8 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
@@ -97,8 +99,10 @@ public class Main {
 					System.out.println("error reading");
 				}
 					}
+					Imgproc.circle(bufferedImageToMat(arg0), new Point(100,100), 23, new Scalar(0,255,0),20);
 					control.updateImg(arg0);
 					vd.update(arg0);
+					
 					vd.updateImageTwo(control.getImigi2());
 					
 					
