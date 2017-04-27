@@ -28,24 +28,29 @@ import de.yadrone.base.command.LEDAnimation;
 
 
 
-public class QRCodeScanner
+public class CustomQRScanner
 {
 	
 	public String qrt = "";
 	private Result res = null;
 	
-	public Boolean applyFilters(Mat frame, ARDrone drone){
+	public boolean applyFilters(Mat frame, ARDrone drone){
 		String qrText="";
 		for (int i = 1; i < 15; i++) {
 			qrText = imageUpdated(frame,i);
 			if(qrText.length()<3){
 				System.out.println("IM S PLRBN XSNMF ");
-//				Log.writeLog("ID på switch ved return: "+i);
+				
 				continue;
 			} else {
 //				Log.writeLog("ID på switch ved return: "+i +", "+qrText);
 				qrt = qrText;
+				String[] qrArray = qrText.split(",");
 				System.out.println("Result fre QR er : " + qrText);
+				CircleARObject circleDrone = new CircleARObject();
+				circleDrone.horizontal = Integer.parseInt(qrArray[1]);
+				circleDrone.vertical = Integer.parseInt(qrArray[2]);
+				circleDrone.moveBasedOnLocation(drone);
 				try {
 					return false;
 				} catch (Exception e) {
@@ -58,101 +63,7 @@ public class QRCodeScanner
 		return false;
 	}
 	
-	
-	public boolean centerDrone(Result res, ARDrone drone) throws InterruptedException
-	{
-			Result tag = res;
-			
-			
-			if (tag == null){
-				System.out.println("SPIN TO WIN");
-				System.out.println("PaperChaseAutoController: Win");
-				drone.getCommandManager().spinRight(Values.SPEED*10).doFor(50);
-				drone.getCommandManager().hover();
-				
-				return false;
-			}
-			String tagText;
-			ResultPoint[] points;
-			
-				points = tag.getResultPoints();	
-				tagText = tag.getText();
-				
-			
-			
-			int imgCenterX = Values.IMAGE_WIDTH / 2;
-			int imgCenterY = Values.IMAGE_HEIGHT / 2;
-			
-			float x = (points[1].getX()+points[2].getX())/2;
-			float y = (points[1].getY()+points[2].getY())/2;
-			//Thread.currentThread().sleep(1000);
-			
-			if (x < (imgCenterX - Values.TOLERANCE))
-			{
-				System.out.println("PaperChaseAutoController: Go left");
 
-				drone.getCommandManager().goLeft(Values.SPEED).doFor(Values.DOTIME);
-				drone.getCommandManager().hover();
-//				drone.getCommandManager().goLeft(Values.SPEED);
-//				Thread.currentThread().sleep(Values.DOTIME+25);
-				return false;
-			}
-		
-		
-			else if (x > (imgCenterX + Values.TOLERANCE))
-			{
-				System.out.println("PaperChaseAutoController: Go right");
-				drone.getCommandManager().goRight(Values.SPEED).doFor(Values.DOTIME);
-				drone.getCommandManager().hover();
-//				drone.getCommandManager().goRight(Values.SPEED);
-				//				Thread.currentThread().sleep(Values.DOTIME+25);
-				return false;
-			}
-			else if (y < (imgCenterY - Values.TOLERANCE))
-			{
-				System.out.println("PaperChaseAutoController: Go forward");
-				if (y < (imgCenterY - Values.TOLERANCE))
-				{
-					System.out.println("PaperChaseAutoController: Go Down");
-
-					drone.getCommandManager().down(Values.SPEED).doFor(Values.DOTIME);
-					drone.getCommandManager().hover();
-					
-//					drone.getCommandManager().goLeft(Values.SPEED);
-					//					Thread.currentThread().sleep(Values.DOTIME);
-					return false;
-				}
-				else if (y > (imgCenterY - Values.TOLERANCE))
-				{
-					System.out.println("PaperChaseAutoController: Go Up");
-
-					drone.getCommandManager().up(Values.SPEED).doFor(Values.DOTIME);
-					drone.getCommandManager().hover();
-//					drone.getCommandManager().goLeft(Values.SPEED);
-					//					Thread.currentThread().sleep(Values.DOTIME);
-					return true;
-					
-				}
-				
-//				drone.getCommandManager().forward(Values.SPEED);
-//				Thread.currentThread().sleep(Values.SLEEP);
-			}
-			else if (y > (imgCenterY + Values.TOLERANCE))
-			{
-				System.out.println("PaperChaseAutoController: Go backward");
-//				drone.getCommandManager().backward(Values.SPEED);
-//				Thread.currentThread().sleep(Values.SLEEP);
-			}
-			else
-			{
-				System.out.println("PaperChaseAutoController: Tag centered");
-				drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_GREEN, 10, 5);
-				return true;
-				
-			}
-		
-		return false;
-	}
 	public String imageUpdated(Mat frame, int i){
 		String qrt = "";
 		Mat temp = new Mat();

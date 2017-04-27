@@ -15,7 +15,7 @@ import com.google.zxing.qrcode.QRCodeReader;
 
 public class QRClass {
 	
-	QRCodeScanner scanner = new QRCodeScanner();
+	CustomQRScanner scanner = new CustomQRScanner();
 	
 	//public Result getResult(BufferedImage img){
 		

@@ -8,7 +8,6 @@ import org.opencv.core.KeyPoint;
 
 import com.google.zxing.Result;
 
-import de.yadrone.apps.paperchase.QRCodeScanner;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.navdata.Altitude;
@@ -19,7 +18,7 @@ public class BasicController implements Runnable {
 
 	private BasicMovements movement;
 	private Thread thread;
-	private QRCodeScanner troller;
+	private CustomQRScanner troller;
 	private boolean running = true;
 	
 	//States
@@ -46,7 +45,7 @@ public class BasicController implements Runnable {
 	
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
-		troller = new QRCodeScanner();
+		troller = new CustomQRScanner();
 		drone.getNavDataManager().addAltitudeListener(new AltitudeListener() {
 			
 			@Override
