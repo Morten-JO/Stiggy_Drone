@@ -70,18 +70,6 @@ public class BasicController implements Runnable {
 		thread.start();
 	}
 	
-	public void moveBasedOnCircleObject(CircleARObject obj){
-		if(obj.horizontal > 5){
-			movement.goLeft(500);
-		} else if(obj.horizontal < -5){
-			movement.goRight(500);
-		} else if(obj.vertical > 5){
-			movement.goDown(500);
-		} else if(obj.vertical < -5){
-			movement.goUp(500);
-		}
-	}
-	
 	public BufferedImage getImigi2(){
 		return imgi2;
 	}
@@ -145,10 +133,7 @@ public class BasicController implements Runnable {
 							}
 							KeyPoint point = Hjorten.checkForCircle(imgi);
 							if(point != null){
-								CircleARObject obj = new CircleARObject();
-								obj.horizontal = point.pt.x;
-								obj.vertical = point.pt.y;
-								if(obj.moveBasedOnLocation(movement.getDrone())){
+								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y)){
 									this.currentState = ERROR; // just to land
 								}
 							}
@@ -164,12 +149,15 @@ public class BasicController implements Runnable {
 								e.printStackTrace();
 							}
 						
-						if(tries > 4){
-							currentState = ONGROUND;
-						}
-						//check if in air and standing still
-						break;
-					
+							if(tries > 4){
+								currentState = ONGROUND;
+							}
+							//check if in air and standing still
+							break;
+						case ERROR:
+							System.out.println("ERROR END");
+							System.exit(0);
+							break;
 					
 					}
 					imageUpdated = false;
