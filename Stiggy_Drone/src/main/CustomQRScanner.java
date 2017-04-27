@@ -47,10 +47,9 @@ public class CustomQRScanner
 				qrt = qrText;
 				String[] qrArray = qrText.split(",");
 				System.out.println("Result fre QR er : " + qrText);
-				CircleARObject circleDrone = new CircleARObject();
-				circleDrone.horizontal = Integer.parseInt(qrArray[1]);
-				circleDrone.vertical = Integer.parseInt(qrArray[2]);
-				circleDrone.moveBasedOnLocation(drone);
+				
+				
+				CircleARObject.moveBasedOnLocation(drone, Double.parseDouble(qrArray[1]), Double.parseDouble(qrArray[2]));
 				try {
 					return false;
 				} catch (Exception e) {
