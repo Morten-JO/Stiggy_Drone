@@ -10,7 +10,7 @@
 <blobColor>0</blobColor>
 <filterByArea>1</filterByArea>
 <minArea>30</minArea>
-<maxArea>50000.</maxArea>
+<maxArea>500000.</maxArea>
 <filterByCircularity>0</filterByCircularity>
 <minCircularity>2.000001192092896e-01</minCircularity>
 <maxCircularity>15.4028234663852886e+38</maxCircularity>
