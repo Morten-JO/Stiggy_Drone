@@ -1,9 +1,6 @@
-package main;
+package scanners;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
@@ -12,25 +9,21 @@ import org.opencv.core.Size;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgproc.Imgproc;
 
-public class Hjorten {
+import helpers.ToolkitKit;
 
-	private int count = 0;
+public class CircleEdgeDetection {
+
 	private static int threshold = 140;
-	private int ratio = 1;
-	private int relax = 0;
-	private BufferedImage img2;
-	/**
-	 * g.setColor(Color.RED);
-	    	for(int i = 0 ; i < this.points.size(); i++){
-	    		double size = 2 * points.get(i).size;
-	    		g.drawOval((int)points.get(i).pt.x - (int)(0.5f * size), (int)points.get(i).pt.y - (int)(0.5f * size), (int)size, (int)size);
-	    	}
-	 */
 	
+	/**
+	 * Checks for a circle based on edges, takes the biggest circle into account
+	 * @param img
+	 * @return Keypoint with center of circle, or null if error.
+	 */
 	public static KeyPoint checkForCircle(BufferedImage img){
 		if(img != null){
 			BufferedImage image = img;
-		    Mat gg = Main.bufferedImageToMat(image);
+		    Mat gg = ToolkitKit.bufferedImageToMat(image);
 		    Mat gray = new Mat();
 		    Imgproc.cvtColor(gg, gray, Imgproc.COLOR_BGR2GRAY);
 		    Imgproc.blur(gray, gray, new Size(3, 3));
@@ -52,7 +45,6 @@ public class Hjorten {
 		    Mat out = new Mat();
 		    org.opencv.core.Scalar cores = new org.opencv.core.Scalar(0, 255, 0);
 		    org.opencv.features2d.Features2d.drawKeypoints(edges, keypoints, out);
-		    BufferedImage img2 = Main.MatToBufferedImage(out, null);
 		    KeyPoint[] points = keypoints.toArray();
 		    if(points.length > 0){
 			    for(int i = 0; i < points.length; i++){
