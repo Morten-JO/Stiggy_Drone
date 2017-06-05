@@ -2,12 +2,17 @@ package frames;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
@@ -22,36 +27,57 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import controllers.BasicController;
+import de.yadrone.base.ARDrone;
+import de.yadrone.base.command.VideoChannel;
+import de.yadrone.base.video.ImageListener;
 
-public class VideoFrame extends JPanel{
+public class VideoFrame extends JFrame{
 
 	private BufferedImage img;
-	private BufferedImage img2;
+	public static KeyPoint point;
 	
-	public VideoFrame(){
+	public VideoFrame(final ARDrone drone, BasicController control){
+		super("YADrone Tutorial");
+        
+        setSize(640, 360);
+        setVisible(true);
+        
+        drone.getVideoManager().addImageListener(new ImageListener() {
+            public void imageUpdated(BufferedImage newImage)
+            {
+            	control.updateImg(newImage);
+            	img = newImage;
+        		SwingUtilities.invokeLater(new Runnable() {
+        			public void run()
+        			{
+        				repaint();
+        			}
+        		});
+            }
+        });
 	}
 	
-	public void update(BufferedImage img){
-		this.img = img;
-		repaint();
-	}
 	
-	public void updateImageTwo(BufferedImage img){
-		this.img2 = img;
-		repaint();
-	}
 	
-	public void paintComponent(Graphics g) {
-		super.paintComponents(g);
+	public void paint(Graphics g)
+    {
 	    if(img != null){
 	    	g.drawImage(img, 0, 0, this);
 	    }
-	    if(img2 != null){
-	    	g.drawImage(img2, 0, img.getHeight(), img.getWidth(), img.getHeight(), this);
+	    g.setColor(Color.GREEN);
+	    g.drawString("Current State: "+this.getNameOfState(), 20, 20);
+	    g.setColor(Color.GREEN);
+	    if(point != null){
+	    	int back = (int)(point.size/2*1.3);
+	    	g.drawOval((int)(point.pt.x), (int)(point.pt.y), back, back);
+	    	/*for(int i = 0; i < points.length; i++){
+	    		if(points[i] != null){
+	    		
+	    			g.drawOval((int)(points[i].pt.x), (int)(points[i].pt.y), (int)(points[i].size/2), (int)(points[i].size/2));
+	    		}
+	    	}*/
 	    }
-	    g.setColor(Color.RED);
-	    g.drawString("Current State: "+this.getNameOfState(), 10, 10);
-	}
+    }
 	
 	private String getNameOfState(){
 		switch(BasicController.currentState){
@@ -64,7 +90,7 @@ public class VideoFrame extends JPanel{
 		case 6:
 			return "Branner";
 		case 7:
-			return "Hjorten";
+			return "Circledetection";
 		case 8:
 			return "Flythrough";
 		case 9:

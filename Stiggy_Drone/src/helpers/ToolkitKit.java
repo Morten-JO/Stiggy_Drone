@@ -19,11 +19,17 @@ import org.opencv.objdetect.CascadeClassifier;
 
 public class ToolkitKit {
 
-	public static boolean saveImage(BufferedImage img){
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	public static boolean saveImage(BufferedImage img, String text){
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		Date date = new Date();
 		String index = dateFormat.format(date);
-		File outputfile = new File("resources/saved"+index+".png");
+		File outputfile = new File("saved"+index+"_"+text+".png");
+		try {
+			outputfile.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    try {
 			ImageIO.write(img, "png", outputfile);
 		} catch (IOException l) {

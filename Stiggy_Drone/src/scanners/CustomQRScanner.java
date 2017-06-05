@@ -42,7 +42,7 @@ public class CustomQRScanner
 				String[] qrArray = qrText.split(",");
 				System.out.println("Result fra QR er : " + qrText);
 				
-				return CircleARObject.moveBasedOnLocation(drone, Double.parseDouble(qrArray[1]), Double.parseDouble(qrArray[2]));
+				return CircleARObject.moveBasedOnLocation(drone, Double.parseDouble(qrArray[1]), Double.parseDouble(qrArray[2]), true);
 			}
 		}
 		return false;

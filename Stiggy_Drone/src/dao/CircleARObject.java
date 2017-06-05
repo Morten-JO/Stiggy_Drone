@@ -11,82 +11,72 @@ public class CircleARObject {
 	public static double yIntervals = 30;
 	
 	
-	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y){
+	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y, boolean height){
 			if(x > (screenWidth/2+xIntervals)){
 				if(!DEBUG_MODE){
 					System.out.println("RIIIIIIIIGHT");
-					drone.getCommandManager().goRight(5).doFor(100);
-					/*try {
-						Thread.sleep(100);
+					drone.getCommandManager().goRight(20).doFor(150);
+					
+					try {
+						Thread.sleep(200);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					drone.getCommandManager().hover();
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}*/
+					
 				} else{
 					System.out.println("CENTER | GO RIGHT!");
 				}
 			} else if(x < (screenWidth/2-xIntervals)){
 				if(!DEBUG_MODE){
-					System.out.println("LEEEEEEEEFT");
-					drone.getCommandManager().goLeft(5).doFor(100);
-					/*try {
+					System.out.println("LEEEFT");
+					drone.getCommandManager().goLeft(20).doFor(150);
+					
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					drone.getCommandManager().hover();
+					
+				} else{
+					System.out.println("CENTER | GO LEFT!");
+				}
+			} else if(y > (screenHeight/2+yIntervals)){
+				if(!DEBUG_MODE){
+					if(height){
+						return true;
+					}
+					System.out.println("UPPPPPPPP");
+					drone.getCommandManager().up(20).doFor(100);
+					try {
+						Thread.sleep(120);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					drone.getCommandManager().hover();
+					
+				} else{
+					System.out.println("CENTER | GO UP!");
+				}
+			} else if(y < (screenHeight/2-yIntervals)){
+				if(!DEBUG_MODE){
+					if(height){
+						return true;
+					}
+					System.out.println("DOWWWWWWN");
+					drone.getCommandManager().down(20).doFor(80);
+					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					drone.getCommandManager().hover();
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}*/
-				} else{
-					System.out.println("CENTER | GO LEFT!");
-				}
-			} else if(y > (screenHeight/2+yIntervals)){
-				if(!DEBUG_MODE){
-					drone.getCommandManager().up(5).doFor(80);
-					/*try {
-						Thread.sleep(80);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					drone.getCommandManager().hover();
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}*/
-				} else{
-					System.out.println("CENTER | GO UP!");
-				}
-			} else if(y < (screenHeight/2-yIntervals)){
-				if(!DEBUG_MODE){
-					drone.getCommandManager().down(20).doFor(20);
-					/*try {
-						Thread.sleep(20);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					drone.getCommandManager().hover();
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}*/
+					
 				} else{
 					System.out.println("CENTER | GO UP!");
 				}

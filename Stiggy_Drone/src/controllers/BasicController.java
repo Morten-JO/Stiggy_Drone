@@ -42,7 +42,7 @@ public class BasicController implements Runnable {
 	private BufferedImage imgi2;
 	private BufferedImage imgi;
 	
-	public static int currentState = ONGROUND;
+	public static int currentState = CIRCLEEDGEDETECTION;
 	
 	private int alti = 1;
 	private int oldalti;
@@ -147,21 +147,24 @@ public class BasicController implements Runnable {
 							}
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi);
 							if(point != null){
-								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y)){
-									currentState = FLYTHROUGH; // just to land
+								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false)){
+									System.out.println("SWITCHED THAT FUCKING STATE");
+									
+									//currentState = FLYTHROUGH; // just to land
 								}
 							}
 							
 							
 							break;
 						case FLYTHROUGH:
-							movement.getDrone().getCommandManager().forward(50);
+							movement.getDrone().getCommandManager().forward(50).doFor(4500);
 							try {
 								Thread.sleep(5000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							movement.getDrone().getCommandManager().hover();
 							//check if in air and standing still
 							break;
 						case CHECKFLOWN:
