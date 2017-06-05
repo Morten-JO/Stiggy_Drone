@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 
+import dao.CircleARObject;
 import de.yadrone.apps.paperchase.PaperChase;
 import de.yadrone.apps.paperchase.TagListener;
 import de.yadrone.base.ARDrone;
@@ -58,7 +59,8 @@ public class QRController  {
 			float x = (points[1].getX()+points[2].getX())/2;
 			float y = (points[0].getY()+points[1].getY())/2;
 			//Thread.currentThread().sleep(1000);
-			
+			return CircleARObject.moveBasedOnLocation(drone, x, y);
+			/*
 			if (x < (imgCenterX - Values.TOLERANCE))
 			{
 				System.out.println("PaperChaseAutoController: Go left");
@@ -126,9 +128,9 @@ public class QRController  {
 				drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_GREEN, 10, 5);
 				return true;
 				
-			}
+			}*/
 		
-		return false;
+		//return false;
 	}
 
 }

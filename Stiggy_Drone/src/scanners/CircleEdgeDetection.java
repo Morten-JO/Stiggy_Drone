@@ -48,7 +48,7 @@ public class CircleEdgeDetection {
 		    KeyPoint[] points = keypoints.toArray();
 		    if(points.length > 0){
 			    for(int i = 0; i < points.length; i++){
-			    	if(points[i].size > 100f){
+			    	if(points[i].size > 90f){
 			    		System.out.println("Point #"+i+": "+points[i].pt.x+","+points[i].pt.y+" with size: "+points[i].size);
 			    		System.out.println("FOUND BIG ENOUGH CIRCLE!!!!! IT MUST BE WHAT WE NEED TO GO THROUGH");
 			    		System.out.println("ANGLE: "+points[i].angle);

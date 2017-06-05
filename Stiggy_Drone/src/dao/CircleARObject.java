@@ -4,7 +4,7 @@ import de.yadrone.base.ARDrone;
 
 public class CircleARObject {
 	
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	public static double screenWidth = 640;
 	public static double screenHeight = 360;
 	public static double xIntervals = 30;
@@ -14,8 +14,9 @@ public class CircleARObject {
 	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y){
 			if(x > (screenWidth/2+xIntervals)){
 				if(!DEBUG_MODE){
-					drone.getCommandManager().goRight(35);
-					try {
+					System.out.println("RIIIIIIIIGHT");
+					drone.getCommandManager().goRight(5).doFor(100);
+					/*try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -27,14 +28,15 @@ public class CircleARObject {
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
+					}*/
 				} else{
 					System.out.println("CENTER | GO RIGHT!");
 				}
 			} else if(x < (screenWidth/2-xIntervals)){
 				if(!DEBUG_MODE){
-					drone.getCommandManager().goLeft(35);
-					try {
+					System.out.println("LEEEEEEEEFT");
+					drone.getCommandManager().goLeft(5).doFor(100);
+					/*try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -46,14 +48,14 @@ public class CircleARObject {
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
+					}*/
 				} else{
 					System.out.println("CENTER | GO LEFT!");
 				}
 			} else if(y > (screenHeight/2+yIntervals)){
 				if(!DEBUG_MODE){
-					drone.getCommandManager().up(35);
-					try {
+					drone.getCommandManager().up(5).doFor(80);
+					/*try {
 						Thread.sleep(80);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -65,14 +67,14 @@ public class CircleARObject {
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
+					}*/
 				} else{
 					System.out.println("CENTER | GO UP!");
 				}
 			} else if(y < (screenHeight/2-yIntervals)){
 				if(!DEBUG_MODE){
-					drone.getCommandManager().down(5);
-					try {
+					drone.getCommandManager().down(20).doFor(20);
+					/*try {
 						Thread.sleep(20);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -84,7 +86,7 @@ public class CircleARObject {
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
+					}*/
 				} else{
 					System.out.println("CENTER | GO UP!");
 				}

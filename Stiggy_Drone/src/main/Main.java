@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -52,12 +53,20 @@ public class Main {
 	public static int preventLagCounter = 0;
 	public static boolean userControl = true;
 	
+	private static VideoFrame vd;
+	private static JFrame showvd;
+	private static ARDrone drone;
+	private static BasicController control;
+	private static JFrame frame;
 
 	public static void main(String[] args) {
-		try
-		{
+		loadDrone();
+	}
+	
+	public static void loadDrone(){
+		try{
 			//Load drone things.
-			ARDrone drone = new ARDrone();
+			Main.drone = new ARDrone();
 			drone.addExceptionListener(new IExceptionListener() {
 				public void exeptionOccurred(ARDroneException exc)
 				{
@@ -68,17 +77,18 @@ public class Main {
 			drone.start();
 			
 			//Make videoframe.
-			VideoFrame vd = new VideoFrame();
-			JFrame showvd = new JFrame();
+			Main.vd = new VideoFrame();
+			Main.showvd = new JFrame();
 			showvd.setTitle("Video shower.");
 			showvd.setSize(640, 720);
 			showvd.add(vd);
 			showvd.setVisible(true);
 			
 			//Create basic controller
-			BasicController control = new BasicController(drone);
-			control.start();
-			
+			if(Main.control == null){
+				Main.control = new BasicController(drone);
+				control.start();
+			}
 			
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
@@ -90,7 +100,7 @@ public class Main {
 			});
 			
 			//Manual override control panel
-			JFrame frame = new JFrame();
+			Main.frame = new JFrame();
 			frame.setTitle("Control panel.");
 			frame.setSize(500, 500);
 			frame.setVisible(true);
@@ -112,7 +122,7 @@ public class Main {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {}
 			});
-			
+		
 			frame.addKeyListener(new KeyListener() {
 				@Override
 				public void keyTyped(KeyEvent e) {}
@@ -202,5 +212,17 @@ public class Main {
 		}
 	}
 	
+	public static void closeDrone(){
+		System.out.println("Closing drone.");
+		control.slowStop();
+		control = null;
+		drone.hover();
+		drone = null;
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+		frame = null;
+		showvd.dispatchEvent(new WindowEvent(showvd, WindowEvent.WINDOW_CLOSING));
+		showvd = null;
+		vd = null;
+	}
 	
 }

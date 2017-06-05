@@ -32,28 +32,17 @@ public class CustomQRScanner
 	private Result res = null;
 	
 	public boolean applyFilters(Mat frame, ARDrone drone){
-		String qrText="";
+		String qrText = "";
 		for (int i = 1; i < 15; i++) {
 			qrText = imageUpdated(frame,i);
 			if(qrText.length()<3){
-				System.out.println("IM S PLRBN XSNMF ");
-				
 				continue;
 			} else {
-//				Log.writeLog("ID på switch ved return: "+i +", "+qrText);
-				qrt = qrText;
+//				qrt = qrText;
 				String[] qrArray = qrText.split(",");
-				System.out.println("Result fre QR er : " + qrText);
+				System.out.println("Result fra QR er : " + qrText);
 				
-				
-				CircleARObject.moveBasedOnLocation(drone, Double.parseDouble(qrArray[1]), Double.parseDouble(qrArray[2]));
-				try {
-					return false;
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+				return CircleARObject.moveBasedOnLocation(drone, Double.parseDouble(qrArray[1]), Double.parseDouble(qrArray[2]));
 			}
 		}
 		return false;
