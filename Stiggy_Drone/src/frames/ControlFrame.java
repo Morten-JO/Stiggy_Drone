@@ -22,7 +22,7 @@ public class ControlFrame extends JFrame{
 	
 	public ControlFrame(ARDrone drone){
 		super("Control panel.");
-		this.setSize(500, 500);
+		this.setSize(150, 150);
 		this.setVisible(true);
 		this.drone = drone;
 		addKeyListener();

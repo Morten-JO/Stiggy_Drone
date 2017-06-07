@@ -11,6 +11,7 @@ import com.google.zxing.Result;
 import dao.CircleARObject;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
+import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import de.yadrone.base.navdata.AttitudeListener;
@@ -20,10 +21,9 @@ import movement.BasicMovements;
 import scanners.CircleEdgeDetection;
 import scanners.CustomQRScanner;
 
-public class BasicController implements Runnable {
+public class BasicController {
 
 	private BasicMovements movement;
-	private Thread thread;
 	private CustomQRScanner qrScanner;
 	private boolean running = true;
 	
@@ -38,11 +38,12 @@ public class BasicController implements Runnable {
 	public static final int CHECKFLOWN = 9;
 	public static final int FINISH = 10;
 	public static final int ERROR = 37;
+	public static final int TEST = 666;
 	//States end
 	private BufferedImage imgi2;
 	private BufferedImage imgi;
 	
-	public static int currentState = CIRCLEEDGEDETECTION;
+	public static int currentState = ONGROUND;
 	
 	private int alti = 1;
 	private int oldalti;
@@ -54,7 +55,7 @@ public class BasicController implements Runnable {
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
 		qrScanner = new CustomQRScanner();
-		drone.getNavDataManager().addAltitudeListener(new AltitudeListener() {
+		AltitudeListener lis = new AltitudeListener() {
 			
 			@Override
 			public void receivedExtendedAltitude(Altitude arg0) {
@@ -65,7 +66,9 @@ public class BasicController implements Runnable {
 			public void receivedAltitude(int arg0) {
 				alti = arg0;
 			}
-		});
+		};
+		drone.getNavDataManager().addAltitudeListener(lis);
+		drone.setMaxAltitude(1850);
 	}
 	
 	public void updateImg(BufferedImage img1){
@@ -73,16 +76,15 @@ public class BasicController implements Runnable {
 		imageUpdated = true;
 	}
 	
-	public void start(){
-		thread = new Thread(this);
-		thread.start();
-	}
-	
 	public BufferedImage getImigi2(){
 		return imgi2;
 	}
 
-	@Override
+	public void updateImigi2(BufferedImage img){
+		imgi2 = img;
+		
+	}
+	
 	public void run() {
 		while(running){
 			if(Main.userControl == false){
@@ -105,17 +107,12 @@ public class BasicController implements Runnable {
 							break;
 						case ONGROUND:
 							oldalti = alti;
-							movement.getDrone().getCommandManager().takeOff();
-							try {
-								Thread.sleep(5000);
-							} catch (InterruptedException e1) {
-								e1.printStackTrace();
-							}
+							movement.getDrone().getCommandManager().takeOff().doFor(5000);
 							currentState = INAIR;
 							break;
 						case INAIR:
 							if(oldalti != alti){
-								currentState = SEARCHQR;
+								currentState = BRANNER;
 								tries = 0;
 							} else{
 								currentState = ONGROUND;
@@ -134,24 +131,25 @@ public class BasicController implements Runnable {
 							}
 							break;
 						case BRANNER:
-							System.out.println("GOT TO BRANNER");
-							movement.getDrone().getCommandManager().landing();
+							if(alti < 1600){
+								movement.getDrone().getCommandManager().up(20).doFor(500);
+								movement.getDrone().getCommandManager().hover().doFor(1000);
+							} else{
+								currentState = CIRCLEEDGEDETECTION;
+							}
 							break;
 						case CIRCLEEDGEDETECTION:
-							movement.getDrone().getCommandManager().hover();
-							try {
-								Thread.sleep(200);
-							} catch (InterruptedException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi);
+							movement.getDrone().getCommandManager().hover().doFor(50);
+							
+							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
+								currentState = FLYTHROUGH;
+								/*
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false)){
 									System.out.println("SWITCHED THAT FUCKING STATE");
 									
 									//currentState = FLYTHROUGH; // just to land
-								}
+								}*/
 							}
 							
 							
@@ -176,6 +174,33 @@ public class BasicController implements Runnable {
 						case ERROR:
 							System.out.println("ERROR END");
 							System.exit(0);
+							break;
+						case TEST:
+							CommandManager cmd = movement.getDrone().getCommandManager();
+							
+							int speed = 30;
+							long start = System.currentTimeMillis();
+							cmd.takeOff().doFor(5000);
+							
+							//cmd.goLeft(speed).doFor(1000);
+							System.out.println("FIRST HOVER");
+							//cmd.hover().doFor(5000);
+							
+							//cmd.goRight(speed).doFor(1000);
+							System.out.println("SECOND HOVER");
+							//cmd.hover().doFor(5000);
+							
+							cmd.forward(speed).doFor(3000);
+							System.out.println("THIRD HOVER");
+							cmd.hover().doFor(5000);
+							
+							cmd.backward(speed).doFor(3000);
+							System.out.println("FOURTH HOVER");
+							cmd.hover().doFor(5000);
+							System.out.println("TIME TKAEN: "+(System.currentTimeMillis()-start));
+							
+							cmd.landing();
+							currentState = ERROR;
 							break;
 					
 					}

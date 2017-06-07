@@ -78,19 +78,16 @@ public class Main {
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 			drone.start();
 			
-			if(Main.control == null){
-				Main.control = new BasicController(drone);
-				control.start();
+			if(Main.control != null){
+				Main.control.slowStop();
 			}
-			
+			Main.control = new BasicController(drone);			
 			//Make videoframe.
 			Main.vd = new VideoFrame(drone, control);
-			
+
 			//Create basic controller
-			
-			
 			controlFrame = new ControlFrame(drone);
-			
+			control.run();
 		}
 		catch (Exception exc)
 		{

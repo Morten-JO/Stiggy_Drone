@@ -34,12 +34,13 @@ import de.yadrone.base.video.ImageListener;
 public class VideoFrame extends JFrame{
 
 	private BufferedImage img;
-	public static KeyPoint point;
+	public static BufferedImage img2;
+	public static KeyPoint[] point;
 	
 	public VideoFrame(final ARDrone drone, BasicController control){
 		super("YADrone Tutorial");
         
-        setSize(640, 360);
+        setSize(640, 800);
         setVisible(true);
         
         drone.getVideoManager().addImageListener(new ImageListener() {
@@ -64,18 +65,20 @@ public class VideoFrame extends JFrame{
 	    if(img != null){
 	    	g.drawImage(img, 0, 0, this);
 	    }
+	    if(img2 != null){
+	    	g.drawImage(img2, 0, 360, this);
+	    } 
 	    g.setColor(Color.GREEN);
 	    g.drawString("Current State: "+this.getNameOfState(), 20, 20);
 	    g.setColor(Color.GREEN);
 	    if(point != null){
-	    	int back = (int)(point.size/2*1.3);
-	    	g.drawOval((int)(point.pt.x), (int)(point.pt.y), back, back);
-	    	/*for(int i = 0; i < points.length; i++){
-	    		if(points[i] != null){
-	    		
-	    			g.drawOval((int)(points[i].pt.x), (int)(points[i].pt.y), (int)(points[i].size/2), (int)(points[i].size/2));
+	    	//g.drawOval((int)(point.pt.x), (int)(point.pt.y), back, back);
+	    	for(int i = 0; i < point.length; i++){
+	    		if(point[i] != null){
+	    			int back = (int)(point[i].size/2*1.3);
+	    			g.drawOval((int)(point[i].pt.x), (int)(point[i].pt.y), back, back);
 	    		}
-	    	}*/
+	    	}
 	    }
     }
 	
