@@ -18,6 +18,8 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
+import de.yadrone.base.ARDrone;
+import fuk.CircleARObject;
 import helpers.Values;
 
 
@@ -27,22 +29,29 @@ public class CustomQRScanner
 	
 	public String qrt = "";
 	
-	public String applyFilters(Mat frame){
-		String qrText="";
+	public boolean applyFilters(Mat frame, ARDrone drone){
+		
 		for (int i = 1; i < 15; i++) {
-			qrText = imageUpdated(frame,i);
-			if(qrText.length()<3){
+			Result result =  imageUpdated(frame, i);
+			if(result == null){
 				continue;
 			} else {
-				
+				int x = 0;
+				int y = 0;
+				for (ResultPoint rp : result.getResultPoints()){
+					x += rp.getX();
+					y += rp.getY();
+				}
+				x = (int) (x/result.getResultPoints().length);
+				y = (int) (y/result.getResultPoints().length);
 //				qrt = qrText;
-				return qrText;
+				return CircleARObject.moveBasedOnLocation(drone, x, y, true);
 			}
 		}
-		return qrText;
+		return false;
 	}
 	
-	public String imageUpdated(Mat frame, int i){
+	public Result imageUpdated(Mat frame, int i){
 		String qrt = "";
 		Mat temp = new Mat();
 		frame.copyTo(temp);
@@ -107,8 +116,9 @@ public class CustomQRScanner
 		LuminanceSource ls = new BufferedImageLuminanceSource((BufferedImage)image);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(ls));
 		QRCodeReader qrReader = new QRCodeReader();
+		Result result = null;
 		try {
-			Result result = qrReader.decode(bitmap);
+			 result = qrReader.decode(bitmap);
 			System.out.println("QR Code data is: "+result.getText());
 			qrt = result.getText();
 			int x = 0;
@@ -125,7 +135,7 @@ public class CustomQRScanner
 		} catch (FormatException e) {
 		}
 		qrReader.reset();
-		return qrt;
+		return result;
 	}
 	
 	public String imageUpdated(Mat frame){
