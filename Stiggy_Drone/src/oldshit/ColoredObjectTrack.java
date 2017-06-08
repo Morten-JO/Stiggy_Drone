@@ -1,24 +1,20 @@
 package oldshit;
 
-import java.awt.Graphics;  
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.util.ArrayList;  
-import java.util.List;  
-import javax.swing.JFrame;  
-import javax.swing.JPanel;  
-import org.opencv.core.Core;  
-import org.opencv.core.Mat;   
-import org.opencv.core.Point;  
-import org.opencv.core.Scalar;  
-import org.opencv.core.Size;  
-import org.opencv.video.*;
- 
-import org.opencv.core.*;
-import org.opencv.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JPanel;
+
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;  
-import org.opencv.core.CvType;  
 class Panel extends JPanel{  
   private static final long serialVersionUID = 1L;  
   private BufferedImage image;    

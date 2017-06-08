@@ -2,29 +2,27 @@ package controllers;
 
 import java.awt.image.BufferedImage;
 
-import javax.swing.text.html.HTML.Tag;
-
 import org.opencv.core.KeyPoint;
 
-import com.google.zxing.Result;
-
-import dao.CircleARObject;
 import de.yadrone.base.ARDrone;
-import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
+import de.yadrone.base.command.FlyingMode;
+import de.yadrone.base.command.UltrasoundFrequency;
+import de.yadrone.base.command.VideoBitRateMode;
+import de.yadrone.base.command.VideoCodec;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
-import de.yadrone.base.navdata.AttitudeListener;
+import fuk.CircleARObject;
 import helpers.ToolkitKit;
 import main.Main;
 import movement.BasicMovements;
 import scanners.CircleEdgeDetection;
-import scanners.CustomQRScanner;
+//import scanners.CustomQRScanner;
 
 public class BasicController {
 
 	private BasicMovements movement;
-	private CustomQRScanner qrScanner;
+	//private CustomQRScanner qrScanner;
 	private boolean running = true;
 	
 	//States
@@ -52,9 +50,11 @@ public class BasicController {
 	
 	public boolean imageUpdated = false;
 	
+	private long privateTimer;
+	
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
-		qrScanner = new CustomQRScanner();
+		//qrScanner = new CustomQRScanner();
 		AltitudeListener lis = new AltitudeListener() {
 			
 			@Override
@@ -68,7 +68,14 @@ public class BasicController {
 			}
 		};
 		drone.getNavDataManager().addAltitudeListener(lis);
-		drone.setMaxAltitude(1850);
+		drone.setMaxAltitude(1900);
+		/*drone.getCommandManager().setOutdoor(false, false);
+		drone.getCommandManager().setFlyingMode(FlyingMode.FREE_FLIGHT);
+		drone.getCommandManager().setVideoCodecFps(20);
+		drone.getCommandManager().setVideoBitrate(2000);
+		drone.getCommandManager().setUltrasoundFrequency(UltrasoundFrequency.F25Hz);
+		drone.getCommandManager().setVideoCodec(VideoCodec.H264_360P);
+		*/
 	}
 	
 	public void updateImg(BufferedImage img1){
@@ -120,49 +127,45 @@ public class BasicController {
 							break;
 						case SEARCHQR:
 							try {
-									boolean jensen = qrScanner.applyFilters(ToolkitKit.bufferedImageToMat(imgi),movement.getDrone());
+									//boolean jensen = qrScanner.applyFilters(ToolkitKit.bufferedImageToMat(imgi),movement.getDrone());
 									//currentState = BRANNER;
-									if(jensen){
+									//if(jensen){
 										System.out.println("SWITCHED STATE!");
-										currentState = CIRCLEEDGEDETECTION;
-									}
+										//currentState = CIRCLEEDGEDETECTION;
+									//}
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 							break;
 						case BRANNER:
-							if(alti < 1600){
-								movement.getDrone().getCommandManager().up(20).doFor(500);
+							if(alti < 1700){
+								movement.getDrone().getCommandManager().up(20).doFor(300);
 								movement.getDrone().getCommandManager().hover().doFor(1000);
 							} else{
 								currentState = CIRCLEEDGEDETECTION;
 							}
 							break;
 						case CIRCLEEDGEDETECTION:
-							movement.getDrone().getCommandManager().hover().doFor(50);
+							movement.getDrone().getCommandManager().hover().doFor(500);
 							
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
-								currentState = FLYTHROUGH;
-								/*
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false)){
 									System.out.println("SWITCHED THAT FUCKING STATE");
-									
-									//currentState = FLYTHROUGH; // just to land
-								}*/
+									currentState = FLYTHROUGH; // just to land
+									movement.getDrone().getCommandManager().hover().doFor(200);
+									privateTimer = System.currentTimeMillis();
+								}
 							}
 							
 							
 							break;
 						case FLYTHROUGH:
-							movement.getDrone().getCommandManager().forward(50).doFor(4500);
-							try {
-								Thread.sleep(5000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+							movement.getDrone().getCommandManager().forward(13);
+							if((System.currentTimeMillis()-privateTimer) > 5000){
+								currentState = FINISH;
+								movement.getDrone().getCommandManager().hover().doFor(500);
 							}
-							movement.getDrone().getCommandManager().hover();
 							//check if in air and standing still
 							break;
 						case CHECKFLOWN:

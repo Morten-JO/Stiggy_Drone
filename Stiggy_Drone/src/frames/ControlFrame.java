@@ -12,7 +12,6 @@ import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.navdata.BatteryListener;
-import helpers.ToolkitKit;
 import main.Main;
 
 public class ControlFrame extends JFrame{

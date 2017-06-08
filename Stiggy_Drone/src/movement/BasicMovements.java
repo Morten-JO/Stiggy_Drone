@@ -1,7 +1,6 @@
 package movement;
 
 import de.yadrone.base.ARDrone;
-import de.yadrone.base.IARDrone;
 
 public class BasicMovements {
 
