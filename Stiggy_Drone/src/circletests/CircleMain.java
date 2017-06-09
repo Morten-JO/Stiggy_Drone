@@ -13,7 +13,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import helpers.ToolkitKit;
+import helpers.Toolkit;
 
 public class CircleMain {
 
@@ -35,7 +35,7 @@ public class CircleMain {
 		int threshold = 0;
 		KeyPoint pointToReturn = null;
 		if(img != null){
-		    Mat gg = ToolkitKit.bufferedImageToMat(img);
+		    Mat gg = Toolkit.bufferedImageToMat(img);
 		    Mat gray = new Mat();
 		    Imgproc.cvtColor(gg, gray, Imgproc.COLOR_BGR2GRAY);
 		    Imgproc.blur(gray, gray, new Size(3, 3));

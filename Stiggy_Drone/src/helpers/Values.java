@@ -8,4 +8,5 @@ public class Values {
 	public final static int IMAGE_HEIGHT = 720;
 	public final static int TOLERANCE = 20;
 	public final static double BRANNERKONSTANTEN = 519.48;
+	public final static double MAGNUSKONSTANTEN = 13.3;
 }

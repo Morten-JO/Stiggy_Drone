@@ -18,11 +18,11 @@ import org.opencv.imgproc.Imgproc;
 
 import controllers.BasicController;
 import frames.VideoFrame;
-import helpers.ToolkitKit;
+import helpers.Toolkit;
 
 public class CircleEdgeDetection {
 
-	private static int threshold = 48;
+	private static int threshold = 53;
 	
 	/**
 	 * Checks for a circle based on edges, takes the biggest circle into account
@@ -32,7 +32,7 @@ public class CircleEdgeDetection {
 	public static KeyPoint checkForCircle(BufferedImage img, BasicController controller){
 		KeyPoint pointToReturn = null;
 		if(img != null){
-			Mat gg = ToolkitKit.bufferedImageToMat(img);
+			Mat gg = Toolkit.bufferedImageToMat(img);
 			if(gg != null){
 			    Mat gray = new Mat();
 			    Imgproc.cvtColor(gg, gray, Imgproc.COLOR_BGR2GRAY);
@@ -46,7 +46,7 @@ public class CircleEdgeDetection {
 			    
 			    Mat circles = new Mat();
 			    Vector<Mat> circlesList = new Vector<Mat>();
-			    Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, gray.rows()/8, 600, 35, 80, 200);
+			    Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, gray.rows()/8, 600, 50, 80, 200);
 			    List<MatOfPoint> removedContoursList = new ArrayList<MatOfPoint>(); 
 			    for (int id=0;id<circlesList.size();id++){                     
 		            MatOfPoint2f mop2f = new MatOfPoint2f();
@@ -83,7 +83,7 @@ public class CircleEdgeDetection {
 					Imgproc.circle(edges, new Point(points[i].pt.x, points[i].pt.y), (int)points[i].size,new Scalar(100,10,10),3);
 				}
 			    BufferedImage img2 = null;
-			    img2 = ToolkitKit.MatToBufferedImage(edges, BufferedImage.TYPE_BYTE_GRAY);
+			    img2 = Toolkit.MatToBufferedImage(edges, BufferedImage.TYPE_BYTE_GRAY);
 			    if(img2 == null){
 			    	System.out.println("IMGI IS FUCKING NULL");
 			    } else{

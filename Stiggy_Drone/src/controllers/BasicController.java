@@ -1,28 +1,40 @@
 package controllers;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.opencv.core.KeyPoint;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
+
+import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.CommandManager;
-import de.yadrone.base.command.FlyingMode;
-import de.yadrone.base.command.UltrasoundFrequency;
-import de.yadrone.base.command.VideoBitRateMode;
-import de.yadrone.base.command.VideoCodec;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
-import fuk.CircleARObject;
-import helpers.ToolkitKit;
+import helpers.Toolkit;
 import main.Main;
 import movement.BasicMovements;
 import scanners.CircleEdgeDetection;
-//import scanners.CustomQRScanner;
+import scanners.CustomQRScanner;
+import scanners.SimpleQR;
+
 
 public class BasicController {
 
 	private BasicMovements movement;
-	//private CustomQRScanner qrScanner;
+	private CustomQRScanner qrScanner;
 	private boolean running = true;
 	
 	//States
@@ -41,7 +53,7 @@ public class BasicController {
 	private BufferedImage imgi2;
 	private BufferedImage imgi;
 	
-	public static int currentState = ONGROUND;
+	public static int currentState = SEARCHQR;
 	
 	private int alti = 1;
 	private int oldalti;
@@ -54,9 +66,8 @@ public class BasicController {
 	
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
-		//qrScanner = new CustomQRScanner();
+		qrScanner = new CustomQRScanner();
 		AltitudeListener lis = new AltitudeListener() {
-			
 			@Override
 			public void receivedExtendedAltitude(Altitude arg0) {
 				
@@ -69,6 +80,7 @@ public class BasicController {
 		};
 		drone.getNavDataManager().addAltitudeListener(lis);
 		drone.setMaxAltitude(1900);
+		//drone.getCommandManager().setSSIDSinglePlayer("testflight MonkaS");
 		/*drone.getCommandManager().setOutdoor(false, false);
 		drone.getCommandManager().setFlyingMode(FlyingMode.FREE_FLIGHT);
 		drone.getCommandManager().setVideoCodecFps(20);
@@ -113,29 +125,39 @@ public class BasicController {
 							currentState = ONGROUND;
 							break;
 						case ONGROUND:
+							tries++;
+							if(tries > 5){
+								currentState = RESTART;
+							}
 							oldalti = alti;
 							movement.getDrone().getCommandManager().takeOff().doFor(5000);
 							currentState = INAIR;
 							break;
 						case INAIR:
 							if(oldalti != alti){
-								currentState = BRANNER;
+								currentState = SEARCHQR;
 								tries = 0;
 							} else{
 								currentState = ONGROUND;
 							}
 							break;
 						case SEARCHQR:
+							boolean morten = SimpleQR.moveQR(imgi, movement.getDrone());
+							if(morten){
+								System.out.println("Switched to state : CIRCLEDETECTION!");
+								//currentState = CIRCLEEDGEDETECTION;
+							}
+							/*
+							 * MAGNUS
 							try {
-									//boolean jensen = qrScanner.applyFilters(ToolkitKit.bufferedImageToMat(imgi),movement.getDrone());
-									//currentState = BRANNER;
-									//if(jensen){
-										System.out.println("SWITCHED STATE!");
+									boolean jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
+									if(jensen){
+										System.out.println("Switched to state : CIRCLEDETECTION!");
 										//currentState = CIRCLEEDGEDETECTION;
-									//}
+									}
 							} catch (Exception e) {
 								e.printStackTrace();
-							}
+							}*/
 							break;
 						case BRANNER:
 							if(alti < 1700){
@@ -146,19 +168,16 @@ public class BasicController {
 							}
 							break;
 						case CIRCLEEDGEDETECTION:
-							movement.getDrone().getCommandManager().hover().doFor(500);
-							
+							//movement.getDrone().getCommandManager().hover().doFor(500);
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false)){
-									System.out.println("SWITCHED THAT FUCKING STATE");
-									currentState = FLYTHROUGH; // just to land
-									movement.getDrone().getCommandManager().hover().doFor(200);
-									privateTimer = System.currentTimeMillis();
+									System.out.println("Switched to flythrough state.");
+									//currentState = FLYTHROUGH; // just to land
+									//movement.getDrone().getCommandManager().hover().doFor(200);
+									//privateTimer = System.currentTimeMillis();
 								}
-							}
-							
-							
+							} 
 							break;
 						case FLYTHROUGH:
 							movement.getDrone().getCommandManager().forward(13);
@@ -166,10 +185,12 @@ public class BasicController {
 								currentState = FINISH;
 								movement.getDrone().getCommandManager().hover().doFor(500);
 							}
-							//check if in air and standing still
 							break;
 						case CHECKFLOWN:
-							//What to do in here?
+						    
+						    
+						    
+						 
 							break;
 						case FINISH:
 							movement.getDrone().getCommandManager().landing();
@@ -231,5 +252,3 @@ public class BasicController {
 		running = false;
 	}
 }
-	
-

@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-public class ToolkitKit {
+public class Toolkit {
 
 	public static boolean saveImage(BufferedImage img, String text){
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");

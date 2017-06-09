@@ -22,7 +22,7 @@ public class VideoFrame extends JFrame{
 	public VideoFrame(final ARDrone drone, BasicController control){
 		super("YADrone Tutorial");
         
-        setSize(640, 800);
+        setSize(640, 360);
         setVisible(true);
         
         drone.getVideoManager().addImageListener(new ImageListener() {

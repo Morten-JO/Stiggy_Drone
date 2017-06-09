@@ -18,8 +18,8 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
+import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
-import fuk.CircleARObject;
 import helpers.Values;
 
 
@@ -45,7 +45,7 @@ public class CustomQRScanner
 				x = (int) (x/result.getResultPoints().length);
 				y = (int) (y/result.getResultPoints().length);
 //				qrt = qrText;
-				return CircleARObject.moveBasedOnLocation(drone, x, y, true);
+				return CircleARObject.moveBasedOnLocation(drone, x, y, false);
 			}
 		}
 		return false;
@@ -219,7 +219,7 @@ public class CustomQRScanner
 	public double measureDistance(float pixels){
 		
 		
-		return 13.3 * (Values.BRANNERKONSTANTEN / pixels);
+		return Values.MAGNUSKONSTANTEN * (Values.BRANNERKONSTANTEN / pixels);
 		
 	}
 	

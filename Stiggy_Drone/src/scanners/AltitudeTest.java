@@ -5,14 +5,14 @@ import java.util.Scanner;
 
 import org.opencv.core.Core;
 
-import fuk.CircleARObject;
+import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.CalibrationCommand;
 import de.yadrone.base.command.Device;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import de.yadrone.base.video.ImageListener;
-import helpers.ToolkitKit;
+import helpers.Toolkit;
 import scanners.CustomQRScanner;
 
 public class AltitudeTest {
@@ -71,7 +71,7 @@ public class AltitudeTest {
 			@Override
 			public void imageUpdated(BufferedImage arg0) {
 				
-				qrScan.applyFilters(ToolkitKit.bufferedImageToMat(arg0), drone);
+				qrScan.applyFilters(Toolkit.bufferedImageToMat(arg0), drone);
 				
 			}
 		});
