@@ -16,11 +16,14 @@ import controllers.BasicController;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.video.ImageListener;
 
-public class VideoFrame extends JFrame{
+public class VideoFrame extends JFrame implements Runnable{
 
 	private BufferedImage img;
 	public static BufferedImage img2;
 	public static KeyPoint[] point;
+	private ARDrone drone;
+	private BasicController control;
+	private boolean updated;
 	
 	public VideoFrame(final ARDrone drone, BasicController control){
 		super("YADrone Tutorial");
@@ -33,11 +36,12 @@ public class VideoFrame extends JFrame{
                 //frame.dispose();
             }
         });
-        
+        this.drone = drone;
+        this.control = control;
         drone.getVideoManager().addImageListener(new ImageListener() {
             public void imageUpdated(BufferedImage newImage)
             {
-            	control.updateImg(newImage);
+            	updated = true;
             	img = newImage;
         		SwingUtilities.invokeLater(new Runnable() {
         			public void run()
@@ -47,6 +51,9 @@ public class VideoFrame extends JFrame{
         		});
             }
         });
+        Thread thread = new Thread(this);
+        thread.start();
+        
 	}
 	
 	
@@ -91,6 +98,16 @@ public class VideoFrame extends JFrame{
 			return "CheckFlown";
 		default:
 			return "Error";
+		}
+	}
+
+
+
+	@Override
+	public void run() {
+		if(updated){
+			control.updateImg(img);
+			updated = false;
 		}
 	}
 	
