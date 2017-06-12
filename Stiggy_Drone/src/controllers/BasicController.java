@@ -53,7 +53,7 @@ public class BasicController {
 	private BufferedImage imgi2;
 	private BufferedImage imgi;
 	
-	public static int currentState = SEARCHQR;
+	public static int currentState = ONGROUND;
 	
 	private int alti = 1;
 	private int oldalti;
@@ -135,7 +135,7 @@ public class BasicController {
 							break;
 						case INAIR:
 							if(oldalti != alti){
-								currentState = SEARCHQR;
+								currentState = BRANNER;
 								tries = 0;
 							} else{
 								currentState = ONGROUND;
@@ -145,7 +145,7 @@ public class BasicController {
 							boolean morten = SimpleQR.moveQR(imgi, movement.getDrone());
 							if(morten){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
-								//currentState = CIRCLEEDGEDETECTION;
+								currentState = CIRCLEEDGEDETECTION;
 							}
 							/*
 							 * MAGNUS
@@ -168,14 +168,14 @@ public class BasicController {
 							}
 							break;
 						case CIRCLEEDGEDETECTION:
-							//movement.getDrone().getCommandManager().hover().doFor(500);
+							movement.getDrone().getCommandManager().hover().doFor(500);
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false)){
 									System.out.println("Switched to flythrough state.");
-									//currentState = FLYTHROUGH; // just to land
-									//movement.getDrone().getCommandManager().hover().doFor(200);
-									//privateTimer = System.currentTimeMillis();
+									currentState = FLYTHROUGH; // just to land
+									movement.getDrone().getCommandManager().hover().doFor(200);
+									privateTimer = System.currentTimeMillis();
 								}
 							} 
 							break;
