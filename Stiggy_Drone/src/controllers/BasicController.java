@@ -21,6 +21,7 @@ import com.google.zxing.qrcode.QRCodeReader;
 import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.CommandManager;
+import de.yadrone.base.command.UltrasoundFrequency;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import helpers.Toolkit;
@@ -80,12 +81,14 @@ public class BasicController {
 		};
 		drone.getNavDataManager().addAltitudeListener(lis);
 		drone.setMaxAltitude(1900);
+		drone.getCommandManager().setOutdoor(false, true);
+		drone.getCommandManager().setUltrasoundFrequency(UltrasoundFrequency.F25Hz);
 		//drone.getCommandManager().setSSIDSinglePlayer("testflight MonkaS");
-		/*drone.getCommandManager().setOutdoor(false, false);
+		/*
 		drone.getCommandManager().setFlyingMode(FlyingMode.FREE_FLIGHT);
 		drone.getCommandManager().setVideoCodecFps(20);
 		drone.getCommandManager().setVideoBitrate(2000);
-		drone.getCommandManager().setUltrasoundFrequency(UltrasoundFrequency.F25Hz);
+		
 		drone.getCommandManager().setVideoCodec(VideoCodec.H264_360P);
 		*/
 	}
@@ -130,34 +133,37 @@ public class BasicController {
 								currentState = RESTART;
 							}
 							oldalti = alti;
+							movement.getDrone().getCommandManager().flatTrim();
 							movement.getDrone().getCommandManager().takeOff().doFor(5000);
 							currentState = INAIR;
 							break;
 						case INAIR:
 							if(oldalti != alti){
-								currentState = BRANNER;
+								currentState = SEARCHQR;
 								tries = 0;
 							} else{
 								currentState = ONGROUND;
 							}
 							break;
 						case SEARCHQR:
-							boolean morten = SimpleQR.moveQR(imgi, movement.getDrone());
+							/*boolean morten = SimpleQR.moveQR(imgi, movement.getDrone());
 							if(morten){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
 								currentState = CIRCLEEDGEDETECTION;
 							}
+							*/
 							/*
 							 * MAGNUS
+							 * */
 							try {
 									boolean jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
 									if(jensen){
 										System.out.println("Switched to state : CIRCLEDETECTION!");
-										//currentState = CIRCLEEDGEDETECTION;
+										currentState = CIRCLEEDGEDETECTION;
 									}
 							} catch (Exception e) {
 								e.printStackTrace();
-							}*/
+							}/**/
 							break;
 						case BRANNER:
 							if(alti < 1700){
