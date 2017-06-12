@@ -2,10 +2,13 @@ package frames;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 import org.opencv.core.KeyPoint;
 
@@ -24,6 +27,12 @@ public class VideoFrame extends JFrame{
         
         setSize(640, 360);
         setVisible(true);
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent ev) {
+                //frame.dispose();
+            }
+        });
         
         drone.getVideoManager().addImageListener(new ImageListener() {
             public void imageUpdated(BufferedImage newImage)

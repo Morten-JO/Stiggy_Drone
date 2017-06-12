@@ -4,8 +4,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import controllers.BasicController;
 import de.yadrone.base.ARDrone;
@@ -24,6 +27,12 @@ public class ControlFrame extends JFrame{
 		this.setSize(150, 150);
 		this.setVisible(true);
 		this.drone = drone;
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent ev) {
+                //frame.dispose();
+            }
+        });
 		addKeyListener();
 		addMouseListener();
 		
