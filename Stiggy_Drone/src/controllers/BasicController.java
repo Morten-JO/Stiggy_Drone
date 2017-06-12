@@ -139,7 +139,7 @@ public class BasicController {
 							break;
 						case INAIR:
 							if(oldalti != alti){
-								currentState = SEARCHQR;
+								currentState = BRANNER;
 								tries = 0;
 							} else{
 								currentState = ONGROUND;
@@ -187,7 +187,7 @@ public class BasicController {
 							break;
 						case FLYTHROUGH:
 							movement.getDrone().getCommandManager().forward(13);
-							if((System.currentTimeMillis()-privateTimer) > 5000){
+							if((System.currentTimeMillis()-privateTimer) > 3000){
 								currentState = FINISH;
 								movement.getDrone().getCommandManager().hover().doFor(500);
 							}

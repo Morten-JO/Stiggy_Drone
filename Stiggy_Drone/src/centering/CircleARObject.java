@@ -7,8 +7,8 @@ public class CircleARObject {
 	public static final boolean DEBUG_MODE = false;
 	public static double screenWidth = 640;
 	public static double screenHeight = 360;
-	public static double xIntervals = 35;
-	public static double yIntervals = 30;
+	public static double xIntervals = 50;
+	public static double yIntervals = 50;
 	
 	
 	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y, boolean height){

@@ -1,5 +1,8 @@
 package frames;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -25,6 +28,13 @@ public class ControlFrame extends JFrame{
 	public ControlFrame(ARDrone drone){
 		super("Control panel.");
 		this.setSize(150, 150);
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+        Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
+        int x = (int) rect.getMaxX() - this.getWidth();
+        int y = 0;
+        this.setLocation(x, y);
+		
 		this.setVisible(true);
 		this.drone = drone;
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -33,6 +43,7 @@ public class ControlFrame extends JFrame{
                 //frame.dispose();
             }
         });
+        
 		addKeyListener();
 		addMouseListener();
 		

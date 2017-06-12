@@ -24,6 +24,7 @@ public class VideoFrame extends JFrame implements Runnable{
 	private ARDrone drone;
 	private BasicController control;
 	private boolean updated;
+	private boolean running = true;
 	
 	public VideoFrame(final ARDrone drone, BasicController control){
 		super("YADrone Tutorial");
@@ -69,7 +70,9 @@ public class VideoFrame extends JFrame implements Runnable{
 	    g.setColor(Color.GREEN);
 	    g.drawString("Current State: "+this.getNameOfState(), 20, 20);
 	    g.setColor(Color.GREEN);
+	    
 	    if(point != null){
+	    	g.drawRect(320-25, 180-25, 50, 50);
 	    	//g.drawOval((int)(point.pt.x), (int)(point.pt.y), back, back);
 	    	for(int i = 0; i < point.length; i++){
 	    		if(point[i] != null){
@@ -105,10 +108,20 @@ public class VideoFrame extends JFrame implements Runnable{
 
 	@Override
 	public void run() {
-		if(updated){
-			control.updateImg(img);
-			updated = false;
+		while(running){
+			if(updated){
+				control.updateImg(img);
+				updated = false;
+			} else{
+				try {
+					Thread.sleep(20);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
+		
 	}
 	
 	
