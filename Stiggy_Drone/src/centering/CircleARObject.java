@@ -9,8 +9,8 @@ public class CircleARObject {
 	public static final boolean DEBUG_MODE = false;
 	public static double screenWidth = 640;
 	public static double screenHeight = 360;
-	public static double xIntervals = 45;
-	public static double yIntervals = 45;
+	public static double xIntervals = 35;
+	public static double yIntervals = 35;
 	public static double orientation = 0;
 	
 	
@@ -49,7 +49,7 @@ public class CircleARObject {
 			drone.getCommandManager().hover().doFor(500);
 		}else{
 			System.out.println("WE GOING FORWARD NOW BOIS!");
-			drone.getCommandManager().hover().doFor(2000);
+			drone.getCommandManager().hover().doFor(1000);
 			return true;
 		}
 		return false;
