@@ -21,6 +21,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
 import centering.CircleARObject;
+import controllers.BasicController;
 import de.yadrone.base.ARDrone;
 import frames.VideoFrame;
 import helpers.Values;
@@ -49,7 +50,7 @@ public class CustomQRScanner
 				y = (int) (y/result.getResultPoints().length);
 //				qrt = qrText;
 				System.out.println("moving");
-				return CircleARObject.moveBasedOnLocation(drone, x, y, false, 3);
+				return CircleARObject.moveBasedOnLocation(drone, x, y, false, BasicController.SEARCHQR);
 			}
 		}
 		return false;
@@ -118,12 +119,13 @@ public class CustomQRScanner
 		
 		BufferedImage image = toBufferedImage(temp);
 		VideoFrame.img2 = image;
-		int[] pixelsOnQR = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
-	    
+		//int[] pixelsOnQR = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+		Result result = null;
+	    /*
 	    RGBLuminanceSource luminance = new RGBLuminanceSource(image.getWidth(), image.getHeight(), pixelsOnQR);
 	    
 	    BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminance));
-	    Result result = null;
+	    
 	    if(binaryBitmap != null){
 	    	QRCodeReader reader = new QRCodeReader();   
 		    try {
@@ -133,11 +135,12 @@ public class CustomQRScanner
 		    	reader.reset();
 		    } 
 	    }
-		/*LuminanceSource ls = new BufferedImageLuminanceSource((BufferedImage)image);
+	    */
+		LuminanceSource ls = new BufferedImageLuminanceSource((BufferedImage)image);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(ls));
-		QRCodeReader qrReader = new QRCodeReader();*/
+		QRCodeReader qrReader = new QRCodeReader();
 		
-		/*try {
+		try {
 			 result = qrReader.decode(bitmap);
 			System.out.println("QR Code data is: "+result.getText());
 			qrt = result.getText();
@@ -164,7 +167,7 @@ public class CustomQRScanner
 		} catch (NotFoundException e) {
 		} catch (ChecksumException e) {
 		} catch (FormatException e) {
-		}*/
+		}
 		//qrReader.reset();
 		return null;
 	}

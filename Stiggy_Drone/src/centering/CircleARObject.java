@@ -9,8 +9,8 @@ public class CircleARObject {
 	public static final boolean DEBUG_MODE = false;
 	public static double screenWidth = 640;
 	public static double screenHeight = 360;
-	public static double xIntervals = 45;
-	public static double yIntervals = 45;
+	public static double xIntervals = 50;
+	public static double yIntervals = 50;
 	public static double orientation = 0;
 	
 	
@@ -22,13 +22,19 @@ public class CircleARObject {
 		{
 			System.out.println("PaperChaseAutoController: Spin left");
 			drone.getCommandManager().spinLeft(10).doFor(200);
-			
+			drone.getCommandManager().hover().doFor(500);
 		}
 		else if ((orientation < 350) && (orientation > 180)  && state == BasicController.SEARCHQR)
 		{
 			System.out.println("PaperChaseAutoController: Spin right");
 			drone.getCommandManager().spinRight(10).doFor(200);
-		
+			drone.getCommandManager().hover().doFor(500);
+		}
+			
+			else if(x > ((screenWidth/2)+xIntervals)){
+			System.out.println("To center, go right.");
+			drone.getCommandManager().goRight(10).doFor(200);
+			drone.getCommandManager().hover().doFor(500);
 		} else if(x < ((screenWidth/2)-xIntervals)){
 			System.out.println("To center, go left.");
 			drone.getCommandManager().goLeft(10).doFor(200);
@@ -39,13 +45,14 @@ public class CircleARObject {
 			}
 			System.out.println("To center, go down.");
 			drone.getCommandManager().down(10).doFor(120);
+			
 			drone.getCommandManager().hover().doFor(500);
 		} else if(y < ((screenHeight/2)-yIntervals)){
 			if(height){
 				return true;
 			}
 			System.out.println("To center, go up.");
-			drone.getCommandManager().up(20).doFor(120);
+			drone.getCommandManager().down(10).doFor(120);
 			drone.getCommandManager().hover().doFor(500);
 		}else{
 			System.out.println("WE GOING FORWARD NOW BOIS!");

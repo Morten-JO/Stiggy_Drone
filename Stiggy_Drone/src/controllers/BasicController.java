@@ -147,7 +147,7 @@ public class BasicController {
 							}
 							break;
 						case SEARCHQR:
-							
+							/*
 							movement.getDrone().getCommandManager().hover().doFor(1000);
 							int morten = SimpleQR.moveQR(imgi, movement.getDrone());
 							if(morten == 1){
@@ -175,12 +175,12 @@ public class BasicController {
 								}
 							}
 							
-							/*
+							*/
 							boolean jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
 							if(jensen){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
-								//currentState = CIRCLEEDGEDETECTION;
-							}*/
+								currentState = CIRCLEEDGEDETECTION;
+							}
 							break;
 						case BRANNER:
 							if(alti < 1700){
