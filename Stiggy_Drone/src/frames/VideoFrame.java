@@ -15,6 +15,7 @@ import org.opencv.core.KeyPoint;
 import controllers.BasicController;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.video.ImageListener;
+import main.Main;
 
 public class VideoFrame extends JFrame implements Runnable{
 
@@ -24,7 +25,7 @@ public class VideoFrame extends JFrame implements Runnable{
 	private ARDrone drone;
 	private BasicController control;
 	private boolean updated;
-	private boolean running = true;
+	public boolean running = true;
 	
 	public VideoFrame(final ARDrone drone, BasicController control){
 		super("YADrone Tutorial");
@@ -34,7 +35,7 @@ public class VideoFrame extends JFrame implements Runnable{
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent ev) {
-                //frame.dispose();
+                Main.closeDrone();
             }
         });
         this.drone = drone;

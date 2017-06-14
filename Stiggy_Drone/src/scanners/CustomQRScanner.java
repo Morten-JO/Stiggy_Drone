@@ -6,12 +6,14 @@ import java.awt.image.DataBufferByte;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.video.Video;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
@@ -20,6 +22,7 @@ import com.google.zxing.qrcode.QRCodeReader;
 
 import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
+import frames.VideoFrame;
 import helpers.Values;
 
 
@@ -60,19 +63,19 @@ public class CustomQRScanner
 			break;
 		case 2:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 50, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 10, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 3:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 55, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 25, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 4:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 60, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 40, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 5:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 65, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 55, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 6:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
@@ -80,44 +83,60 @@ public class CustomQRScanner
 			break;
 		case 7:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 75, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 85, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 8:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 80, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 100, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 9:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 85, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 115, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 10:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 100, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 130, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 11:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 105, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 145, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 12:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 110, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 160, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 13:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 115, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 175, 255, Imgproc.THRESH_BINARY);
 			break;
 		case 14:
 			Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-			Imgproc.threshold(temp, temp, 120, 255, Imgproc.THRESH_BINARY);
+			Imgproc.threshold(temp, temp, 190, 255, Imgproc.THRESH_BINARY);
 			break;
 		}
 		
-		Image image = toBufferedImage(temp);
-		LuminanceSource ls = new BufferedImageLuminanceSource((BufferedImage)image);
+		BufferedImage image = toBufferedImage(temp);
+		VideoFrame.img2 = image;
+		int[] pixelsOnQR = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+	    
+	    RGBLuminanceSource luminance = new RGBLuminanceSource(image.getWidth(), image.getHeight(), pixelsOnQR);
+	    
+	    BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminance));
+	    Result result = null;
+	    if(binaryBitmap != null){
+	    	QRCodeReader reader = new QRCodeReader();   
+		    try {
+		       return reader.decode(binaryBitmap);
+		    } catch (NotFoundException | ChecksumException | FormatException e) {
+		    	e.printStackTrace();
+		    	reader.reset();
+		    } 
+	    }
+		/*LuminanceSource ls = new BufferedImageLuminanceSource((BufferedImage)image);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(ls));
-		QRCodeReader qrReader = new QRCodeReader();
-		Result result = null;
-		try {
+		QRCodeReader qrReader = new QRCodeReader();*/
+		
+		/*try {
 			 result = qrReader.decode(bitmap);
 			System.out.println("QR Code data is: "+result.getText());
 			qrt = result.getText();
@@ -133,9 +152,9 @@ public class CustomQRScanner
 		} catch (NotFoundException e) {
 		} catch (ChecksumException e) {
 		} catch (FormatException e) {
-		}
-		qrReader.reset();
-		return result;
+		}*/
+		//qrReader.reset();
+		return null;
 	}
 	
 	public String imageUpdated(Mat frame){
@@ -202,7 +221,7 @@ public class CustomQRScanner
 	}
 
 	//Metoden er hentet fra stackoverflow: http://stackoverflow.com/questions/15670933/opencv-java-load-image-to-gui
-	public Image toBufferedImage(Mat m){
+	public BufferedImage toBufferedImage(Mat m){
 		int type = BufferedImage.TYPE_BYTE_GRAY;
 		if ( m.channels() > 1 ) {
 			type = BufferedImage.TYPE_3BYTE_BGR;
@@ -222,7 +241,4 @@ public class CustomQRScanner
 		return Values.MAGNUSKONSTANTEN * (Values.BRANNERKONSTANTEN / pixels);
 		
 	}
-	
-	
-	
 }

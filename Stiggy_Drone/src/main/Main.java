@@ -30,10 +30,10 @@ public class Main {
 	private static ControlFrame controlFrame;
 
 	public static void main(String[] args) {
-		loadDrone();
+		startDrone();
 	}
 	
-	public static void loadDrone(){
+	public static void startDrone(){
 		try{
 			//Load drone things.
 			Main.drone = new ARDrone();
@@ -45,7 +45,7 @@ public class Main {
 			});
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 			drone.start();
-			
+			drone.getVideoManager().reinitialize();
 			if(Main.control != null){
 				Main.control.slowStop();
 			}
@@ -63,17 +63,27 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * Closes everything and exits the program.
+	 */
 	public static void closeDrone(){
 		System.out.println("Closing drone.");
-		control.slowStop();
-		control = null;
-		drone.hover();
-		drone = null;
-		controlFrame.dispatchEvent(new WindowEvent(controlFrame, WindowEvent.WINDOW_CLOSING));
-		controlFrame = null;
-		showvd.dispatchEvent(new WindowEvent(showvd, WindowEvent.WINDOW_CLOSING));
-		showvd = null;
-		vd = null;
+		vd.running = false;
+		if(control != null){
+			control.slowStop();
+			control = null;
+		}
+		if(drone != null){
+			drone.hover();
+			drone.getCommandManager().close();
+			drone.getVideoManager().close();
+			drone.getConfigurationManager().close();
+			drone.getNavDataManager().close();
+			drone.stop();
+			drone.reset();
+			drone = null;
+		}
+		System.exit(0);
 	}
 	
 }

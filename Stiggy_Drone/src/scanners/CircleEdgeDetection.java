@@ -46,7 +46,7 @@ public class CircleEdgeDetection {
 			    
 			    Mat circles = new Mat();
 			    Vector<Mat> circlesList = new Vector<Mat>();
-			    Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, gray.rows()/8, 600, 50, 80, 200);
+			    Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, gray.rows()/8, 600, 50, 60, 200);
 			    List<MatOfPoint> removedContoursList = new ArrayList<MatOfPoint>(); 
 			    for (int id=0;id<circlesList.size();id++){                     
 		            MatOfPoint2f mop2f = new MatOfPoint2f();

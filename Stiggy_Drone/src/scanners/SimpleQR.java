@@ -1,9 +1,12 @@
 package scanners;
 
 import java.awt.image.BufferedImage;
+import java.util.EnumMap;
+import java.util.Map;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.RGBLuminanceSource;
@@ -17,10 +20,15 @@ import de.yadrone.base.ARDrone;
 
 public class SimpleQR {
 
-	public static boolean moveQR(BufferedImage img, ARDrone drone){
-		Result res = findQR(img);
+	public static int moveQR(BufferedImage img, ARDrone drone){
+		Result res;
+		try {
+			res = findQR(img);
+		} catch (ChecksumException e) {
+			return 2;
+		}
 		if(res == null){
-			return false;
+			return -1;
 		} else {
 			int x = 0;
 			int y = 0;
@@ -30,7 +38,12 @@ public class SimpleQR {
 			}
 			x = (int) (x/res.getResultPoints().length);
 			y = (int) (y/res.getResultPoints().length);
-			return CircleARObject.moveBasedOnLocation(drone, x, y, false);
+			boolean move = CircleARObject.moveBasedOnLocation(drone, x, y, false);
+			if(move){
+				return 1;
+			} else{
+				return 0;
+			}
 		}
 	}
 	
@@ -39,8 +52,11 @@ public class SimpleQR {
 	 * @param img
 	 * @return
 	 */
-	public static Result findQR(BufferedImage img){
-	    BinaryBitmap binaryBitmap = null;
+	public static Result findQR(BufferedImage img) throws ChecksumException{
+		Map<DecodeHintType,Object> hints = new EnumMap<DecodeHintType,Object>(DecodeHintType.class);
+	    hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+		
+		BinaryBitmap binaryBitmap = null;
 	    
 	    Result resultToReturn = null;
 	 
@@ -53,10 +69,12 @@ public class SimpleQR {
 	    if(binaryBitmap != null){
 	    	QRCodeReader reader = new QRCodeReader();   
 		    try {
-		        resultToReturn = reader.decode(binaryBitmap);
+		        resultToReturn = reader.decode(binaryBitmap, hints);
 		        System.out.println("QR Code data is: "+resultToReturn.getText());
-		    } catch (NotFoundException | ChecksumException | FormatException e) {
+		    } catch (NotFoundException e){
 		    	e.printStackTrace();
+		    } catch(FormatException g){
+		    	 g.printStackTrace();
 		    } 
 	    }
 	    return resultToReturn;

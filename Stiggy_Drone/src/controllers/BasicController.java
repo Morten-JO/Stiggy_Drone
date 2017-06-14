@@ -3,6 +3,7 @@ package controllers;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -50,6 +51,8 @@ public class BasicController {
 	public static final int FINISH = 10;
 	public static final int ERROR = 37;
 	public static final int TEST = 666;
+	public static final int STRAY = 11;
+	public static final int SPIN = 12;
 	//States end
 	private BufferedImage imgi2;
 	private BufferedImage imgi;
@@ -64,6 +67,15 @@ public class BasicController {
 	public boolean imageUpdated = false;
 	
 	private long privateTimer;
+	
+	
+	//Just spin and stray things
+	private int oldState = 0;
+	private int triesBeforeSpin;
+	private int triesBeforeStray;
+	
+	//Just circle things
+	private int triesOnCircle = 0;
 	
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
@@ -83,11 +95,14 @@ public class BasicController {
 		drone.setMaxAltitude(1900);
 		drone.getCommandManager().setOutdoor(false, true);
 		drone.getCommandManager().setUltrasoundFrequency(UltrasoundFrequency.F25Hz);
+		drone.getCommandManager().setVideoCodecFps(15);
+		drone.getCommandManager().setVideoBitrate(1000);
+		
 		//drone.getCommandManager().setSSIDSinglePlayer("testflight MonkaS");
 		/*
 		drone.getCommandManager().setFlyingMode(FlyingMode.FREE_FLIGHT);
 		drone.getCommandManager().setVideoCodecFps(20);
-		drone.getCommandManager().setVideoBitrate(2000);
+		
 		
 		drone.getCommandManager().setVideoCodec(VideoCodec.H264_360P);
 		*/
@@ -112,21 +127,6 @@ public class BasicController {
 			if(Main.userControl == false){
 				if(imageUpdated){
 					switch(currentState){
-						case RESTART:
-							Main.closeDrone();
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e2) {
-								e2.printStackTrace();
-							}
-							Main.loadDrone();
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e2) {
-								e2.printStackTrace();
-							}
-							currentState = ONGROUND;
-							break;
 						case ONGROUND:
 							tries++;
 							if(tries > 5){
@@ -135,52 +135,70 @@ public class BasicController {
 							oldalti = alti;
 							movement.getDrone().getCommandManager().flatTrim();
 							movement.getDrone().getCommandManager().takeOff().doFor(5000);
+							
 							currentState = INAIR;
 							break;
 						case INAIR:
 							if(oldalti != alti){
-								currentState = BRANNER;
+								currentState = SEARCHQR;
 								tries = 0;
 							} else{
 								currentState = ONGROUND;
 							}
 							break;
 						case SEARCHQR:
-							/*boolean morten = SimpleQR.moveQR(imgi, movement.getDrone());
-							if(morten){
+							
+							movement.getDrone().getCommandManager().hover().doFor(1000);
+							int morten = SimpleQR.moveQR(imgi, movement.getDrone());
+							if(morten == 1){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
-								currentState = CIRCLEEDGEDETECTION;
+								currentState = BRANNER;
+							} else if(morten == -1){
+								triesBeforeSpin++;
+								if(triesBeforeSpin > 5){
+									triesBeforeSpin = 0;
+									triesBeforeStray = 0;
+									currentState = SPIN;
+									oldState = SEARCHQR;
+								}
+							} else if(morten == 0){
+								triesBeforeSpin = 0;
+								triesBeforeStray = 0;
+							} else{
+								//Checksumexception
+								triesBeforeStray++;
+								if(triesBeforeStray > 5){
+									triesBeforeStray = 0;
+									triesBeforeSpin = 0;
+									currentState = STRAY;
+									oldState = SEARCHQR;
+								}
 							}
-							*/
+							
 							/*
-							 * MAGNUS
-							 * */
-							try {
-									boolean jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
-									if(jensen){
-										System.out.println("Switched to state : CIRCLEDETECTION!");
-										currentState = CIRCLEEDGEDETECTION;
-									}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}/**/
+							boolean jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
+							if(jensen){
+								System.out.println("Switched to state : CIRCLEDETECTION!");
+								//currentState = CIRCLEEDGEDETECTION;
+							}*/
 							break;
 						case BRANNER:
 							if(alti < 1700){
 								movement.getDrone().getCommandManager().up(20).doFor(300);
 								movement.getDrone().getCommandManager().hover().doFor(1000);
 							} else{
+								movement.getDrone().getCommandManager().hover().doFor(2000);
 								currentState = CIRCLEEDGEDETECTION;
 							}
 							break;
 						case CIRCLEEDGEDETECTION:
-							movement.getDrone().getCommandManager().hover().doFor(500);
+							movement.getDrone().getCommandManager().hover().doFor(2000);
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false)){
 									System.out.println("Switched to flythrough state.");
 									currentState = FLYTHROUGH; // just to land
-									movement.getDrone().getCommandManager().hover().doFor(200);
+									movement.getDrone().getCommandManager().hover().doFor(2000);
 									privateTimer = System.currentTimeMillis();
 								}
 							} 
@@ -203,36 +221,26 @@ public class BasicController {
 							break;
 						case ERROR:
 							System.out.println("ERROR END");
-							System.exit(0);
+							Main.closeDrone();
 							break;
 						case TEST:
-							CommandManager cmd = movement.getDrone().getCommandManager();
-							
-							int speed = 30;
-							long start = System.currentTimeMillis();
-							cmd.takeOff().doFor(5000);
-							
-							//cmd.goLeft(speed).doFor(1000);
-							System.out.println("FIRST HOVER");
-							//cmd.hover().doFor(5000);
-							
-							//cmd.goRight(speed).doFor(1000);
-							System.out.println("SECOND HOVER");
-							//cmd.hover().doFor(5000);
-							
-							cmd.forward(speed).doFor(3000);
-							System.out.println("THIRD HOVER");
-							cmd.hover().doFor(5000);
-							
-							cmd.backward(speed).doFor(3000);
-							System.out.println("FOURTH HOVER");
-							cmd.hover().doFor(5000);
-							System.out.println("TIME TKAEN: "+(System.currentTimeMillis()-start));
-							
-							cmd.landing();
 							currentState = ERROR;
 							break;
-					
+						case STRAY:
+							//Should only be applied if spin couldnt do jack
+							int direction = new Random().nextInt() % 2;
+							switch(direction)
+							{
+								case 0 : movement.getDrone().getCommandManager().goLeft(15); break;
+								case 1 : movement.getDrone().getCommandManager().goRight(15); break;
+							}
+							currentState = oldState;
+							break;
+						case SPIN:
+							movement.getDrone().getCommandManager().spinRight(15).doFor(200);
+							movement.getDrone().getCommandManager().hover().doFor(1000);
+							currentState = oldState;
+							break;
 					}
 					imageUpdated = false;
 				} else{

@@ -7,8 +7,8 @@ public class CircleARObject {
 	public static final boolean DEBUG_MODE = false;
 	public static double screenWidth = 640;
 	public static double screenHeight = 360;
-	public static double xIntervals = 50;
-	public static double yIntervals = 50;
+	public static double xIntervals = 45;
+	public static double yIntervals = 45   ;
 	
 	
 	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y, boolean height){
@@ -32,7 +32,7 @@ public class CircleARObject {
 				return true;
 			}
 			System.out.println("To center, go up.");
-			drone.getCommandManager().down(10).doFor(120);
+			drone.getCommandManager().up(20).doFor(120);
 			drone.getCommandManager().hover().doFor(500);
 		}else{
 			System.out.println("WE GOING FORWARD NOW BOIS!");

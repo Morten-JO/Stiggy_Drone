@@ -40,7 +40,7 @@ public class ControlFrame extends JFrame{
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent ev) {
-                //frame.dispose();
+                Main.closeDrone();
             }
         });
         
@@ -123,8 +123,9 @@ public class ControlFrame extends JFrame{
 				}else if(e.getKeyCode() == KeyEvent.VK_Q){
 					Main.userControl = !Main.userControl;
 					System.out.println("User control = " + Main.userControl);
+				} else if(e.getKeyCode() == KeyEvent.VK_T){
+					Main.closeDrone();
 				}
-			
 			}
 			
 			@Override
