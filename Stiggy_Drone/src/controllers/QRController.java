@@ -59,7 +59,7 @@ import de.yadrone.apps.paperchase.PaperChase;
   			float x = (points[1].getX()+points[2].getX())/2;		
   			float y = (points[0].getY()+points[1].getY())/2;		
   			//Thread.currentThread().sleep(1000);		
-  			return CircleARObject.moveBasedOnLocation(drone, x, y, true);		
+  			return CircleARObject.moveBasedOnLocation(drone, x, y, true, 3);		
   			/*		
   			if (x < (imgCenterX   Values.TOLERANCE))		
   			{		

@@ -6,7 +6,7 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
-import com.google.zxing.RGBLuminanceSource;
+//import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.common.HybridBinarizer;
@@ -30,7 +30,7 @@ public class SimpleQR {
 			}
 			x = (int) (x/res.getResultPoints().length);
 			y = (int) (y/res.getResultPoints().length);
-			return CircleARObject.moveBasedOnLocation(drone, x, y, false);
+			return CircleARObject.moveBasedOnLocation(drone, x, y, false, 3);
 		}
 	}
 	
@@ -46,9 +46,9 @@ public class SimpleQR {
 	 
 	    int[] pixelsOnQR = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
 	    
-	    RGBLuminanceSource luminance = new RGBLuminanceSource(img.getWidth(), img.getHeight(), pixelsOnQR);
+	  //  LuminanceSource luminance = new BuffeLuminanceSource(img.getWidth(), img.getHeight(), pixelsOnQR);
 	    
-	    binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminance));
+	 //   binaryBitmap = new BinaryBitmap(new HybridBinarizer(luminance));
 	 
 	    if(binaryBitmap != null){
 	    	QRCodeReader reader = new QRCodeReader();   

@@ -45,13 +45,14 @@ public class CustomQRScanner
 				x = (int) (x/result.getResultPoints().length);
 				y = (int) (y/result.getResultPoints().length);
 //				qrt = qrText;
-				return CircleARObject.moveBasedOnLocation(drone, x, y, false);
+				System.out.println("moving");
+				return CircleARObject.moveBasedOnLocation(drone, x, y, false, 3);
 			}
 		}
 		return false;
 	}
 	
-	public Result imageUpdated(Mat frame, int i){
+	public synchronized Result imageUpdated(Mat frame, int i){
 		String qrt = "";
 		Mat temp = new Mat();
 		frame.copyTo(temp);
@@ -127,6 +128,17 @@ public class CustomQRScanner
 				x += rp.getX();
 				y += rp.getY();
 			}
+			ResultPoint[] points = result.getResultPoints();
+			ResultPoint a = points[1]; // top-left
+			ResultPoint b = points[2]; // top-right
+			
+			// Find the degree of the rotation (needed e.g. for auto control)
+			
+			double zdist = Math.abs(a.getX() - b.getX());
+			double xdist = Math.abs(a.getY() - b.getY());
+			Values.THETA = (Math.atan(xdist / zdist))*(180 / Math.PI);
+			
+			
 			x = (int) (x/result.getResultPoints().length);
 			y = (int) (y/result.getResultPoints().length);
 			qrt += "," + x + "," + y;

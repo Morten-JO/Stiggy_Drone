@@ -1,6 +1,8 @@
 package centering;
 
+import controllers.BasicController;
 import de.yadrone.base.ARDrone;
+import helpers.Values;
 
 public class CircleARObject {
 	
@@ -9,10 +11,27 @@ public class CircleARObject {
 	public static double screenHeight = 360;
 	public static double xIntervals = 50;
 	public static double yIntervals = 50;
+	public static double orientation = 0;
 	
 	
-	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y, boolean height){
-		if(x > ((screenWidth/2)+xIntervals)){
+	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y, boolean height, int state){
+			
+		orientation = Values.THETA;
+		
+		if ((orientation > 10) && (orientation < 180) && state == BasicController.SEARCHQR)
+		{
+			System.out.println("PaperChaseAutoController: Spin left");
+			drone.getCommandManager().spinLeft(10).doFor(200);
+			
+		}
+		else if ((orientation < 350) && (orientation > 180)  && state == BasicController.SEARCHQR)
+		{
+			System.out.println("PaperChaseAutoController: Spin right");
+			drone.getCommandManager().spinRight(10).doFor(200);
+		
+		}
+			
+			else if(x > ((screenWidth/2)+xIntervals)){
 			System.out.println("To center, go right.");
 			drone.getCommandManager().goRight(10).doFor(200);
 			drone.getCommandManager().hover().doFor(500);
@@ -26,6 +45,7 @@ public class CircleARObject {
 			}
 			System.out.println("To center, go down.");
 			drone.getCommandManager().down(10).doFor(120);
+			
 			drone.getCommandManager().hover().doFor(500);
 		} else if(y < ((screenHeight/2)-yIntervals)){
 			if(height){

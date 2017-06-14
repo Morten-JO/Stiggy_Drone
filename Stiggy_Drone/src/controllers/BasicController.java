@@ -13,7 +13,7 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
-import com.google.zxing.RGBLuminanceSource;
+//import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
@@ -139,7 +139,7 @@ public class BasicController {
 							break;
 						case INAIR:
 							if(oldalti != alti){
-								currentState = BRANNER;
+								currentState = SEARCHQR;
 								tries = 0;
 							} else{
 								currentState = ONGROUND;
@@ -177,7 +177,7 @@ public class BasicController {
 							movement.getDrone().getCommandManager().hover().doFor(500);
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
-								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false)){
+								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false, currentState)){
 									System.out.println("Switched to flythrough state.");
 									currentState = FLYTHROUGH; // just to land
 									movement.getDrone().getCommandManager().hover().doFor(200);
