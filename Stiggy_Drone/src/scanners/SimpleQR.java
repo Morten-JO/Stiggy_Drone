@@ -16,6 +16,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 
 import centering.CircleARObject;
+import controllers.BasicController;
 import de.yadrone.base.ARDrone;
 
 public class SimpleQR {
@@ -38,7 +39,7 @@ public class SimpleQR {
 			}
 			x = (int) (x/res.getResultPoints().length);
 			y = (int) (y/res.getResultPoints().length);
-			boolean move = CircleARObject.moveBasedOnLocation(drone, x, y, false);
+			boolean move = CircleARObject.moveBasedOnLocation(drone, x, y, false, BasicController.SEARCHQR);
 			if(move){
 				return 1;
 			} else{

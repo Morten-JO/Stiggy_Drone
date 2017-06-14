@@ -195,7 +195,7 @@ public class BasicController {
 							movement.getDrone().getCommandManager().hover().doFor(2000);
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
-								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false)){
+								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false, currentState)){
 									System.out.println("Switched to flythrough state.");
 									currentState = FLYTHROUGH; // just to land
 									movement.getDrone().getCommandManager().hover().doFor(2000);
