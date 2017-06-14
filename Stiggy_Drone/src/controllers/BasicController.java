@@ -76,6 +76,7 @@ public class BasicController {
 	
 	//Just circle things
 	private int triesOnCircle = 0;
+	private int timesSteady = 0;
 	
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
@@ -196,10 +197,18 @@ public class BasicController {
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false, currentState)){
-									System.out.println("Switched to flythrough state.");
-									currentState = FLYTHROUGH; // just to land
-									movement.getDrone().getCommandManager().hover().doFor(2000);
-									privateTimer = System.currentTimeMillis();
+									timesSteady++;
+									if(timesSteady > 3){
+										System.out.println("Switched to flythrough state.");
+										currentState = FLYTHROUGH; // just to land
+										movement.getDrone().getCommandManager().hover().doFor(2000);
+										privateTimer = System.currentTimeMillis();
+									} else{
+										System.out.println("Making sure drone is STEADY AF");
+									}
+									
+								} else{
+									timesSteady = 0;
 								}
 							} 
 							break;
