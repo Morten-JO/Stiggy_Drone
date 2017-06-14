@@ -18,28 +18,33 @@ public class CircleARObject {
 			
 		orientation = Values.THETA;
 		
-		if ((orientation > 10) && (orientation < 180) && state == BasicController.SEARCHQR)
+		if (orientation < 89 && state == BasicController.SEARCHQR)
 		{
 			System.out.println("PaperChaseAutoController: Spin left");
 			drone.getCommandManager().spinLeft(10).doFor(200);
 			drone.getCommandManager().hover().doFor(500);
 		}
-		else if ((orientation < 350) && (orientation > 180)  && state == BasicController.SEARCHQR)
+		else if (orientation > 91   && state == BasicController.SEARCHQR)
 		{
 			System.out.println("PaperChaseAutoController: Spin right");
 			drone.getCommandManager().spinRight(10).doFor(200);
 			drone.getCommandManager().hover().doFor(500);
 		}
 			
-			else if(x > ((screenWidth/2)+xIntervals)){
+			else if(x > ((screenWidth/2)+xIntervals))
+			{
 			System.out.println("To center, go right.");
 			drone.getCommandManager().goRight(10).doFor(200);
 			drone.getCommandManager().hover().doFor(500);
-		} else if(x < ((screenWidth/2)-xIntervals)){
+		} 
+			else if(x < ((screenWidth/2)-xIntervals))
+		{
 			System.out.println("To center, go left.");
 			drone.getCommandManager().goLeft(10).doFor(200);
 			drone.getCommandManager().hover().doFor(500);
-		} else if(y > ((screenHeight/2)+yIntervals)){
+		} 
+			else if(y > ((screenHeight/2)+yIntervals))
+			{
 			if(height){
 				return true;
 			}

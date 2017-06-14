@@ -1,8 +1,11 @@
 package scanners;
 
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.EnumMap;
+import java.util.Map;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
@@ -10,6 +13,7 @@ import org.opencv.video.Video;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.FormatException;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.NotFoundException;
@@ -38,6 +42,9 @@ public class CustomQRScanner
 		for (int i = 1; i < 15; i++) {
 			Result result =  imageUpdated(frame, i);
 			if(result == null){
+				VideoFrame.first = null;
+				VideoFrame.second = null;
+				VideoFrame.third = null;
 				continue;
 			} else {
 				int x = 0;
@@ -51,12 +58,13 @@ public class CustomQRScanner
 //				qrt = qrText;
 				System.out.println("moving");
 				return CircleARObject.moveBasedOnLocation(drone, x, y, false, BasicController.SEARCHQR);
+				//return false;
 			}
 		}
 		return false;
 	}
 	
-	public synchronized Result imageUpdated(Mat frame, int i){
+	public Result imageUpdated(Mat frame, int i){
 		String qrt = "";
 		Mat temp = new Mat();
 		frame.copyTo(temp);
@@ -141,7 +149,9 @@ public class CustomQRScanner
 		QRCodeReader qrReader = new QRCodeReader();
 		
 		try {
-			 result = qrReader.decode(bitmap);
+			Map<DecodeHintType,Object> hints = new EnumMap<DecodeHintType,Object>(DecodeHintType.class);
+		    hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+			result = qrReader.decode(bitmap, hints);
 			System.out.println("QR Code data is: "+result.getText());
 			qrt = result.getText();
 			int x = 0;
@@ -155,11 +165,15 @@ public class CustomQRScanner
 			ResultPoint b = points[2]; // top-right
 			
 			// Find the degree of the rotation (needed e.g. for auto control)
-			
+			double theta = 0;
 			double zdist = Math.abs(a.getX() - b.getX());
 			double xdist = Math.abs(a.getY() - b.getY());
-			Values.THETA = (Math.atan(xdist / zdist))*(180 / Math.PI);
-			
+			theta = (Math.atan(xdist / zdist));
+			theta = theta * (180 / Math.PI);
+			Values.THETA = measureAngle(result);
+			//System.out.println("Theta er : " + Values.THETA);
+			System.out.println("Vinkel er: " +  measureAngle(result));
+			System.out.println("Distance er : " + measureDistance((float) zdist));
 			
 			x = (int) (x/result.getResultPoints().length);
 			y = (int) (y/result.getResultPoints().length);
@@ -169,7 +183,7 @@ public class CustomQRScanner
 		} catch (FormatException e) {
 		}
 		//qrReader.reset();
-		return null;
+		return result;
 	}
 	
 	public String imageUpdated(Mat frame){
@@ -256,4 +270,38 @@ public class CustomQRScanner
 		return Values.MAGNUSKONSTANTEN * (Values.BRANNERKONSTANTEN / pixels);
 		
 	}
+	
+	public double measureAngle(Result result){
+		double angle = 0;
+		ResultPoint[] points = result.getResultPoints();
+		
+		float bottomLeftX = points[0].getX();
+		float bottomLeftY = points[0].getY();
+		VideoFrame.first = new Point((int)bottomLeftX,(int)bottomLeftY);
+		float topLeftX = points[1].getX();
+		float topLeftY = points[1].getY();
+		VideoFrame.second = new Point((int)topLeftX, (int)topLeftY);
+		float topRightX = points[2].getX();
+		float topRightY = points[2].getY();
+		VideoFrame.third = new Point((int)topRightX, (int)topRightY);
+		System.out.println("TopL"+topLeftX);
+		System.out.println("TopR"+topRightX);	
+		System.out.println("TOPY"+topLeftY);
+		System.out.println("botYL"+bottomLeftY);
+		float leftSide = (bottomLeftY - topLeftY);
+		float topSide = topRightX - topLeftX;
+		float hypo =  (float) Math.sqrt((Math.pow((double) bottomLeftY-topRightY, 2)) + (Math.pow((double) bottomLeftX-topRightX, 2)));
+		System.out.println("hypo: "+hypo);
+		System.out.println("leftsige");
+		//Check at det spiller max med kodens rotation
+		
+		angle = Math.acos((Math.pow((double) topSide, 2)+ Math.pow((double) leftSide, 2) - Math.pow((double) hypo, 2))
+				/(2*leftSide*topSide))* (180 / Math.PI);;
+		System.out.println("ANGLE: "+angle);
+		return angle;
+		
+	}
+	
+	
+	
 }

@@ -2,6 +2,7 @@ package frames;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -26,6 +27,9 @@ public class VideoFrame extends JFrame implements Runnable{
 	private BasicController control;
 	private boolean updated;
 	public boolean running = true;
+	public static Point first;
+	public static Point second;
+	public static Point third;
 	
 	public VideoFrame(final ARDrone drone, BasicController control){
 		super("YADrone Tutorial");
@@ -81,6 +85,11 @@ public class VideoFrame extends JFrame implements Runnable{
 	    			g.drawOval((int)(point[i].pt.x), (int)(point[i].pt.y), back, back);
 	    		}
 	    	}
+	    }
+	    if(first != null && second != null && third != null){
+	    	g.drawLine((int)first.getX(), (int)first.getY(), (int)second.getX(), (int)second.getY());
+	    	g.drawLine((int)second.getX(), (int)second.getY(), (int)third.getX(), (int)third.getY());
+	    	g.drawLine((int)first.getX(), (int)first.getY(), (int)second.getX(), (int)second.getY());
 	    }
     }
 	
