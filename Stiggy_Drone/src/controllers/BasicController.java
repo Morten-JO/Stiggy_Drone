@@ -6,11 +6,14 @@ import org.opencv.core.KeyPoint;
 
 import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
+import de.yadrone.base.command.CalibrationCommand;
+import de.yadrone.base.command.Device;
 import de.yadrone.base.command.UltrasoundFrequency;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import detection.CircleEdgeDetection;
 import detection.CustomQRScanner;
+import frames.VideoFrame;
 import helpers.Toolkit;
 import helpers.Values;
 import main.Main;
@@ -80,7 +83,7 @@ public class BasicController {
 			}
 		};
 		drone.getNavDataManager().addAltitudeListener(lis);
-		drone.setMaxAltitude(1900);
+		drone.setMaxAltitude(2700);
 		drone.getCommandManager().setOutdoor(false, true);
 		drone.getCommandManager().setUltrasoundFrequency(UltrasoundFrequency.F25Hz);
 		drone.getCommandManager().setVideoCodecFps(15);
@@ -123,7 +126,8 @@ public class BasicController {
 							oldalti = alti;
 							movement.getDrone().getCommandManager().flatTrim();
 							movement.getDrone().getCommandManager().takeOff().doFor(5000);
-							
+							movement.getDrone().getCommandManager().setCommand(new CalibrationCommand(Device.MAGNETOMETER));
+							movement.getDrone().getCommandManager().hover().doFor(1500);
 							currentState = INAIR;
 							break;
 						case INAIR:
@@ -177,7 +181,11 @@ public class BasicController {
 							int jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone(), currentlySearchingForQr);
 							if(jensen == 1){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
+								VideoFrame.first = null;
+								VideoFrame.second = null;
+								VideoFrame.third = null;
 								currentState = BRANNER;
+								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							} else if(jensen == -1){
 								triesBeforeSpin++;
 								if(triesBeforeSpin > 30){
@@ -235,8 +243,8 @@ public class BasicController {
 							}
 							break;
 						case FLYTHROUGH:
-							movement.getDrone().getCommandManager().forward(13);
-							if((System.currentTimeMillis()-privateTimer) > 1500){
+							movement.getDrone().getCommandManager().forward(Values.BASE_SPEED);
+							if((System.currentTimeMillis()-privateTimer) > 2000){
 								currentState = FINISH;
 								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							}

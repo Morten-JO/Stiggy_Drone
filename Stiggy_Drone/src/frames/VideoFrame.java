@@ -95,7 +95,7 @@ public class VideoFrame extends JFrame implements Runnable{
 	    g.drawString("Current instruction: "+CommandManager.currentlyDoing, 20, 80);
 	    g.setColor(Color.GREEN);
 	    Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(8));
+        g2.setStroke(new BasicStroke(5));
 	    if(point != null){
 	    	g.drawRect(320-25, 180-25, 50, 50);
 	    	//g.drawOval((int)(point.pt.x), (int)(point.pt.y), back, back);

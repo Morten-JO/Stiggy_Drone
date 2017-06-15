@@ -2,6 +2,8 @@ package centering;
 
 import controllers.BasicController;
 import de.yadrone.base.ARDrone;
+import de.yadrone.base.command.CalibrationCommand;
+import de.yadrone.base.command.Device;
 import helpers.Values;
 
 public class CircleARObject {
@@ -20,7 +22,15 @@ public class CircleARObject {
 		oldTheta = orientation;
 		orientation = Values.THETA;
 		
-		if(y > ((screenHeight/2)+yIntervals)) {
+		if(x > ((screenWidth/2)+xIntervals)) {
+			System.out.println("To center, go right.");
+			drone.getCommandManager().goRight(Values.BASE_SPEED).doFor(200);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+		} else if(x < ((screenWidth/2)-xIntervals)) {
+			System.out.println("To center, go left.");
+			drone.getCommandManager().goLeft(Values.BASE_SPEED).doFor(200);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+		} else if(y > ((screenHeight/2)+yIntervals)) {
 			if(height){
 				return true;
 			}
@@ -33,14 +43,6 @@ public class CircleARObject {
 			}
 			System.out.println("To center, go up.");
 			drone.getCommandManager().up(Values.BASE_SPEED).doFor(120);
-			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
-		} else if(x > ((screenWidth/2)+xIntervals)) {
-			System.out.println("To center, go right.");
-			drone.getCommandManager().goRight(Values.BASE_SPEED).doFor(200);
-			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
-		} else if(x < ((screenWidth/2)-xIntervals)) {
-			System.out.println("To center, go left.");
-			drone.getCommandManager().goLeft(Values.BASE_SPEED).doFor(200);
 			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
 		} else if (orientation < 88 && state == BasicController.SEARCHQR && oldTheta != orientation) {
 			System.out.println("To center, Spin left");
