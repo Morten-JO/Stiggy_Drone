@@ -171,6 +171,7 @@ public class CustomQRScanner
 			theta = (Math.atan(xdist / zdist));
 			theta = theta * (180 / Math.PI);
 			Values.THETA = measureAngle(result);
+			Values.DISTANCE = measureDistance((float) zdist);
 			//System.out.println("Theta er : " + Values.THETA);
 			System.out.println("Vinkel er: " +  measureAngle(result));
 			System.out.println("Distance er : " + measureDistance((float) zdist));
@@ -213,7 +214,7 @@ public class CustomQRScanner
 		qrReader.reset();
 		return qrt;
 	}
-	
+	/*
 	public String imageUpdated(BufferedImage image){
 //		String qrt = "";
 		LuminanceSource ls = new BufferedImageLuminanceSource(image);
@@ -244,7 +245,7 @@ public class CustomQRScanner
 		qrReader.reset();
 		return qrt;
 	}
-	
+	*/
 	public String getQrt(){
 		return qrt;
 	}
@@ -292,7 +293,7 @@ public class CustomQRScanner
 		float topSide = topRightX - topLeftX;
 		float hypo =  (float) Math.sqrt((Math.pow((double) bottomLeftY-topRightY, 2)) + (Math.pow((double) bottomLeftX-topRightX, 2)));
 		System.out.println("hypo: "+hypo);
-		System.out.println("leftsige");
+		
 		//Check at det spiller max med kodens rotation
 		
 		angle = Math.acos((Math.pow((double) topSide, 2)+ Math.pow((double) leftSide, 2) - Math.pow((double) hypo, 2))

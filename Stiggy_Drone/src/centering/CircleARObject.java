@@ -12,22 +12,30 @@ public class CircleARObject {
 	public static double xIntervals = 35;
 	public static double yIntervals = 35;
 	public static double orientation = 0;
+	public static double oldTheta = 1 ;
 	
 	
 	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y, boolean height, int state){
 			
+			oldTheta = orientation ;
 		orientation = Values.THETA;
 		
-		if (orientation < 89 && state == BasicController.SEARCHQR)
+		System.out.println("BIAS:"+orientation);
+		
+		if (orientation < 88 && state == BasicController.SEARCHQR && oldTheta != orientation)
 		{
 			System.out.println("PaperChaseAutoController: Spin left");
-			drone.getCommandManager().spinLeft(10).doFor(200);
+			drone.getCommandManager().spinLeft(20).doFor(200);
+			drone.getCommandManager().hover().doFor(500);
+			drone.getCommandManager().goRight(20).after(700);
 			drone.getCommandManager().hover().doFor(500);
 		}
-		else if (orientation > 91   && state == BasicController.SEARCHQR)
+		else if (orientation > 91   && state == BasicController.SEARCHQR && oldTheta != orientation)
 		{
 			System.out.println("PaperChaseAutoController: Spin right");
-			drone.getCommandManager().spinRight(10).doFor(200);
+			drone.getCommandManager().spinRight(20).doFor(200);
+			drone.getCommandManager().hover().doFor(500);
+			drone.getCommandManager().goLeft(20).after(700);
 			drone.getCommandManager().hover().doFor(500);
 		}
 			
@@ -61,6 +69,9 @@ public class CircleARObject {
 			drone.getCommandManager().hover().doFor(500);
 		}else{
 			System.out.println("WE GOING FORWARD NOW BOIS!");
+			if (Values.DISTANCE > 200){
+				drone.getCommandManager().forward(20).doFor(300);
+			}
 			drone.getCommandManager().hover().doFor(1000);
 			return true;
 		}

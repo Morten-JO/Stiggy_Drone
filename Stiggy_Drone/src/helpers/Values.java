@@ -10,4 +10,5 @@ public class Values {
 	public final static double BRANNERKONSTANTEN = 519.48;
 	public final static double MAGNUSKONSTANTEN = 13.3;
 	public static double THETA = 0;
+	public static double DISTANCE = 0;
 }
