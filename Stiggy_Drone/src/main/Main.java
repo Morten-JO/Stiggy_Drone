@@ -44,16 +44,13 @@ public class Main {
 			});
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 			drone.start();
-			drone.getVideoManager().reinitialize();
 			if(Main.control != null){
 				Main.control.slowStop();
 			}
 			Main.control = new BasicController(drone);			
 			//Make videoframe.
 			Main.vd = new VideoFrame(drone, control);
-
 			//Create basic controller
-			controlFrame = new ControlFrame(drone);
 			control.run();
 		}
 		catch (Exception exc)

@@ -17,61 +17,46 @@ public class CircleARObject {
 	
 	public static boolean moveBasedOnLocation(ARDrone drone, double x, double y, boolean height, int state){
 			
-			oldTheta = orientation ;
+		oldTheta = orientation;
 		orientation = Values.THETA;
 		
-		System.out.println("BIAS:"+orientation);
-		
-		
-			
-		if(x > ((screenWidth/2)+xIntervals))
-			{
-			System.out.println("To center, go right.");
-			drone.getCommandManager().goRight(10).doFor(200);
-			drone.getCommandManager().hover().doFor(500);
-		} 
-			else if(x < ((screenWidth/2)-xIntervals))
-		{
-			System.out.println("To center, go left.");
-			drone.getCommandManager().goLeft(10).doFor(200);
-			drone.getCommandManager().hover().doFor(500);
-		} 
-			else if(y > ((screenHeight/2)+yIntervals))
-			{
+		if(y > ((screenHeight/2)+yIntervals)) {
 			if(height){
 				return true;
 			}
 			System.out.println("To center, go down.");
-			drone.getCommandManager().down(10).doFor(120);
-			
-			drone.getCommandManager().hover().doFor(500);
+			drone.getCommandManager().down(Values.BASE_SPEED).doFor(120);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
 		} else if(y < ((screenHeight/2)-yIntervals)){
 			if(height){
 				return true;
 			}
 			System.out.println("To center, go up.");
-			drone.getCommandManager().up(10).doFor(120);
-			drone.getCommandManager().hover().doFor(500);
-		}
-		else if (orientation < 88 && state == BasicController.SEARCHQR && oldTheta != orientation)
-		{
-			System.out.println("PaperChaseAutoController: Spin left");
-			drone.getCommandManager().spinLeft(20).doFor(200);
-			drone.getCommandManager().hover().doFor(500);
-			drone.getCommandManager().goRight(20).after(500);
-			drone.getCommandManager().hover().doFor(500);
-		}
-		else if (orientation > 91   && state == BasicController.SEARCHQR && oldTheta != orientation)
-		{
-			System.out.println("PaperChaseAutoController: Spin right");
-			drone.getCommandManager().spinRight(20).doFor(200);
-			drone.getCommandManager().hover().doFor(500);
-			drone.getCommandManager().goLeft(20).after(500);
-			drone.getCommandManager().hover().doFor(500);
-		}
-		else{
-			System.out.println("WE GOING FORWARD NOW BOIS!");
-			drone.getCommandManager().hover().doFor(1000);
+			drone.getCommandManager().up(Values.BASE_SPEED).doFor(120);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+		} else if(x > ((screenWidth/2)+xIntervals)) {
+			System.out.println("To center, go right.");
+			drone.getCommandManager().goRight(Values.BASE_SPEED).doFor(200);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+		} else if(x < ((screenWidth/2)-xIntervals)) {
+			System.out.println("To center, go left.");
+			drone.getCommandManager().goLeft(Values.BASE_SPEED).doFor(200);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+		} else if (orientation < 88 && state == BasicController.SEARCHQR && oldTheta != orientation) {
+			System.out.println("To center, Spin left");
+			drone.getCommandManager().spinLeft(Values.BASE_SPEED).doFor(200);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+			drone.getCommandManager().goRight(Values.BASE_SPEED).after(500);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+		} else if (orientation > 91   && state == BasicController.SEARCHQR && oldTheta != orientation) {
+			System.out.println("To center, Spin right");
+			drone.getCommandManager().spinRight(Values.BASE_SPEED).doFor(200);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+			drone.getCommandManager().goLeft(Values.BASE_SPEED).after(500);
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
+		} else{
+			System.out.println("Center is just infront of us!");
+			drone.getCommandManager().hover().doFor(Values.BASE_SLEEP);
 			return true;
 		}
 		return false;

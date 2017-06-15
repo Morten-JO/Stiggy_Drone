@@ -11,4 +11,6 @@ public class Values {
 	public final static double MAGNUSKONSTANTEN = 13.3;
 	public static double THETA = 0;
 	public static double DISTANCE = 0;
+	public final static int BASE_SPEED = 20;
+	public final static int BASE_SLEEP = 500;
 }

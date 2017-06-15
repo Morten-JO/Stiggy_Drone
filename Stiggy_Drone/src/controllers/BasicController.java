@@ -9,11 +9,12 @@ import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.UltrasoundFrequency;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
+import detection.CircleEdgeDetection;
+import detection.CustomQRScanner;
 import helpers.Toolkit;
+import helpers.Values;
 import main.Main;
 import movement.BasicMovements;
-import scanners.CircleEdgeDetection;
-import scanners.CustomQRScanner;
 
 
 public class BasicController {
@@ -46,6 +47,8 @@ public class BasicController {
 	private int oldalti;
 	
 	private int tries = 0;
+	
+	private String currentlySearchingForQr = "W01.00";
 	
 	public boolean imageUpdated = false;
 	
@@ -170,14 +173,14 @@ public class BasicController {
 									oldState = SEARCHQR;
 								}
 							}*/
-							movement.getDrone().getCommandManager().hover().doFor(400);
-							int jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
+							movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
+							int jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone(), currentlySearchingForQr);
 							if(jensen == 1){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
 								currentState = BRANNER;
 							} else if(jensen == -1){
 								triesBeforeSpin++;
-								if(triesBeforeSpin > 10){
+								if(triesBeforeSpin > 30){
 									triesBeforeSpin = 0;
 									triesBeforeStray = 0;
 									currentState = SPIN;
@@ -198,7 +201,7 @@ public class BasicController {
 							} else{
 								//Checksumexception
 								triesBeforeStray++;
-								if(triesBeforeStray > 10){
+								if(triesBeforeStray > 30){
 									triesBeforeStray = 0;
 									triesBeforeSpin = 0;
 									currentState = STRAY;
@@ -208,26 +211,26 @@ public class BasicController {
 							break;
 						case BRANNER:
 							if(alti < 1700){
-								movement.getDrone().getCommandManager().up(20).doFor(300);
-								movement.getDrone().getCommandManager().hover().doFor(400);
+								movement.getDrone().getCommandManager().up(Values.BASE_SPEED).doFor(300);
+								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							} else{
-								movement.getDrone().getCommandManager().hover().doFor(1000);
+								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 								currentState = CIRCLEEDGEDETECTION;
 							}
 							break;
 						case CIRCLEEDGEDETECTION:
-							movement.getDrone().getCommandManager().hover().doFor(400);
+							movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false, currentState)){
 									gotSteady = true;
-									movement.getDrone().getCommandManager().forward(15).doFor(200);
-									movement.getDrone().getCommandManager().hover().doFor(400);
+									movement.getDrone().getCommandManager().forward(Values.BASE_SPEED).doFor(200);
+									movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 								} 
 							}  else if(gotSteady){
 								System.out.println("Switched to flythrough state.");
 								currentState = FLYTHROUGH; // just to land
-								movement.getDrone().getCommandManager().hover().doFor(2000);
+								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 								privateTimer = System.currentTimeMillis();
 							}
 							break;
@@ -235,7 +238,7 @@ public class BasicController {
 							movement.getDrone().getCommandManager().forward(13);
 							if((System.currentTimeMillis()-privateTimer) > 1500){
 								currentState = FINISH;
-								movement.getDrone().getCommandManager().hover().doFor(500);
+								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							}
 							break;
 						case CHECKFLOWN:
@@ -255,20 +258,20 @@ public class BasicController {
 							//Should only be applied if spin couldnt do jack
 							if(fineWithLeft){
 								System.out.println("Fine with going left.");
-								movement.getDrone().getCommandManager().goLeft(15).doFor(200);
-								movement.getDrone().getCommandManager().hover().doFor(500);
+								movement.getDrone().getCommandManager().goLeft(Values.BASE_SPEED).doFor(200);
+								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							} else{
 								System.out.println("Not fine with going left.");
-								movement.getDrone().getCommandManager().goRight(15).doFor(200);
-								movement.getDrone().getCommandManager().hover().doFor(500);
+								movement.getDrone().getCommandManager().goRight(Values.BASE_SPEED).doFor(200);
+								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							}
 							justStrayed = true;
 							currentState = oldState;
 							break;
 						case SPIN:
 							System.out.println("Its spin state.");
-							movement.getDrone().getCommandManager().spinRight(15).doFor(350);
-							movement.getDrone().getCommandManager().hover().doFor(1000);
+							movement.getDrone().getCommandManager().spinRight(Values.BASE_SPEED).doFor(350);
+							movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							currentState = oldState;
 							break;
 					}
