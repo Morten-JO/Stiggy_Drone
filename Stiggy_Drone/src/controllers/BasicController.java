@@ -170,7 +170,7 @@ public class BasicController {
 									oldState = SEARCHQR;
 								}
 							}*/
-							
+							movement.getDrone().getCommandManager().hover().doFor(400);
 							int jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
 							if(jensen == 1){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
@@ -209,14 +209,14 @@ public class BasicController {
 						case BRANNER:
 							if(alti < 1700){
 								movement.getDrone().getCommandManager().up(20).doFor(300);
-								movement.getDrone().getCommandManager().hover().doFor(1000);
+								movement.getDrone().getCommandManager().hover().doFor(400);
 							} else{
-								movement.getDrone().getCommandManager().hover().doFor(2000);
+								movement.getDrone().getCommandManager().hover().doFor(1000);
 								currentState = CIRCLEEDGEDETECTION;
 							}
 							break;
 						case CIRCLEEDGEDETECTION:
-							movement.getDrone().getCommandManager().hover().doFor(2000);
+							movement.getDrone().getCommandManager().hover().doFor(400);
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false, currentState)){
