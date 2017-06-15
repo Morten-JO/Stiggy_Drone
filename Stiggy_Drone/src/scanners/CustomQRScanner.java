@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.video.Video;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
@@ -17,7 +16,6 @@ import com.google.zxing.DecodeHintType;
 import com.google.zxing.FormatException;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.NotFoundException;
-import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
@@ -37,15 +35,20 @@ public class CustomQRScanner
 	
 	public String qrt = "";
 	
-	public boolean applyFilters(Mat frame, ARDrone drone){
-		
+	public int applyFilters(Mat frame, ARDrone drone){
 		for (int i = 1; i < 15; i++) {
-			Result result =  imageUpdated(frame, i);
+			Result result;
+			try {
+				result = imageUpdated(frame, i);
+			} catch (ChecksumException e) {
+				e.printStackTrace();
+				return 2;
+			}
 			if(result == null){
 				VideoFrame.first = null;
 				VideoFrame.second = null;
 				VideoFrame.third = null;
-				continue;
+				return -1;
 			} else {
 				int x = 0;
 				int y = 0;
@@ -57,14 +60,19 @@ public class CustomQRScanner
 				y = (int) (y/result.getResultPoints().length);
 //				qrt = qrText;
 				System.out.println("moving");
-				return CircleARObject.moveBasedOnLocation(drone, x, y, false, BasicController.SEARCHQR);
+				boolean move = CircleARObject.moveBasedOnLocation(drone, x, y, false, BasicController.SEARCHQR);
+				if(move){
+					return 1;
+				} else{
+					return 0;
+				}
 				//return false;
 			}
 		}
-		return false;
+		return -1;
 	}
 	
-	public Result imageUpdated(Mat frame, int i){
+	public Result imageUpdated(Mat frame, int i) throws ChecksumException{
 		String qrt = "";
 		Mat temp = new Mat();
 		frame.copyTo(temp);
@@ -180,7 +188,6 @@ public class CustomQRScanner
 			y = (int) (y/result.getResultPoints().length);
 			qrt += "," + x + "," + y;
 		} catch (NotFoundException e) {
-		} catch (ChecksumException e) {
 		} catch (FormatException e) {
 		}
 		//qrReader.reset();

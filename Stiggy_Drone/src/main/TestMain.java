@@ -1,8 +1,6 @@
 package main;
 
 import de.yadrone.apps.paperchase.PaperChase;
-import de.yadrone.base.ARDrone;
-import de.yadrone.base.command.CommandManager;
 
 public class TestMain {
 

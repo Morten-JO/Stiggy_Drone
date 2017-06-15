@@ -1,27 +1,11 @@
 package controllers;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
-import java.util.UUID;
-
-import javax.imageio.ImageIO;
 
 import org.opencv.core.KeyPoint;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.ChecksumException;
-import com.google.zxing.FormatException;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.RGBLuminanceSource;
-import com.google.zxing.Result;
-import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
-
 import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
-import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.UltrasoundFrequency;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
@@ -30,7 +14,6 @@ import main.Main;
 import movement.BasicMovements;
 import scanners.CircleEdgeDetection;
 import scanners.CustomQRScanner;
-import scanners.SimpleQR;
 
 
 public class BasicController {
@@ -153,6 +136,7 @@ public class BasicController {
 							movement.getDrone().getCommandManager().hover().doFor(1000);
 							int morten = SimpleQR.moveQR(imgi, movement.getDrone());
 							System.out.println("Morten is: "+morten);
+							
 							if(morten == 1){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
 								currentState = BRANNER;
@@ -185,13 +169,41 @@ public class BasicController {
 									currentState = STRAY;
 									oldState = SEARCHQR;
 								}
-							}
-							*/
+							}*/
 							
-							boolean jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
-							if(jensen){
+							int jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone());
+							if(jensen == 1){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
-								currentState = CIRCLEEDGEDETECTION;
+								currentState = BRANNER;
+							} else if(jensen == -1){
+								triesBeforeSpin++;
+								if(triesBeforeSpin > 10){
+									triesBeforeSpin = 0;
+									triesBeforeStray = 0;
+									currentState = SPIN;
+									oldState = SEARCHQR;
+									if(justStrayed){
+										justStrayed = false;
+										fineWithLeft = false;
+										currentState = STRAY;
+									}
+								}
+							} else if(jensen == 0){
+								if(justStrayed){
+									justStrayed = false;
+									fineWithLeft = true;
+								}
+								triesBeforeSpin = 0;
+								triesBeforeStray = 0;
+							} else{
+								//Checksumexception
+								triesBeforeStray++;
+								if(triesBeforeStray > 10){
+									triesBeforeStray = 0;
+									triesBeforeSpin = 0;
+									currentState = STRAY;
+									oldState = SEARCHQR;
+								}
 							}
 							break;
 						case BRANNER:

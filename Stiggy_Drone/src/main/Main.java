@@ -1,6 +1,5 @@
 package main;
 
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;

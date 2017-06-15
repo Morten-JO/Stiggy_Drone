@@ -1,18 +1,12 @@
 package controllers;		
   		
-  import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImage;
 
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 
 import centering.CircleARObject;
-import de.yadrone.apps.paperchase.PaperChase;		
-  import de.yadrone.apps.paperchase.TagListener;		
-  import de.yadrone.base.ARDrone;		
-  import de.yadrone.base.command.LEDAnimation;		
-  import de.yadrone.base.navdata.Altitude;		
-  import de.yadrone.base.navdata.AltitudeListener;		
-  import helpers.Values;		
+import de.yadrone.base.ARDrone;		
   		
   public class QRController  {		
   			

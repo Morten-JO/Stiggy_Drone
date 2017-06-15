@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 import org.opencv.core.Core;
 
-import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.CalibrationCommand;
 import de.yadrone.base.command.Device;
@@ -13,7 +12,6 @@ import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
 import de.yadrone.base.video.ImageListener;
 import helpers.Toolkit;
-import scanners.CustomQRScanner;
 
 public class AltitudeTest {
 	
