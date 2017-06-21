@@ -11,7 +11,6 @@ import controllers.BasicController;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
-import frames.ControlFrame;
 import frames.VideoFrame;
 
 public class Main {
@@ -23,10 +22,8 @@ public class Main {
 	public static boolean userControl = true;
 	
 	private static VideoFrame vd;
-	private static JFrame showvd;
 	private static ARDrone drone;
 	private static BasicController control;
-	private static ControlFrame controlFrame;
 
 	public static void main(String[] args) {
 		startDrone();

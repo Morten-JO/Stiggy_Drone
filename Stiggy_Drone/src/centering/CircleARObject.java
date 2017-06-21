@@ -1,9 +1,6 @@
 package centering;
 
-import controllers.BasicController;
 import de.yadrone.base.ARDrone;
-import de.yadrone.base.command.CalibrationCommand;
-import de.yadrone.base.command.Device;
 import helpers.Values;
 
 public class CircleARObject {

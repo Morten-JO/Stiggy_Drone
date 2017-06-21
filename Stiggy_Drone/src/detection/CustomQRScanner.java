@@ -1,9 +1,7 @@
 package detection;
 
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -26,6 +24,7 @@ import centering.CircleARObject;
 import controllers.BasicController;
 import de.yadrone.base.ARDrone;
 import frames.VideoFrame;
+import helpers.Toolkit;
 import helpers.Values;
 
 public class CustomQRScanner {
@@ -33,53 +32,46 @@ public class CustomQRScanner {
 	public String qrt = "";
 	
 	public int findQR(Mat frame, ARDrone drone, String currentQrToFind){
-		boolean wrongQr = false;
-		
-			Result result;
-			try {
-				result = getQRResult(frame);
-			} catch (ChecksumException e) {
-				e.printStackTrace();
-				return 2;
+		Result result;
+		try {
+			result = getQRResult(frame);
+		} catch (ChecksumException e) {
+			e.printStackTrace();
+			return 2;
+		}
+		if(result == null){
+			VideoFrame.first = null;
+			VideoFrame.second = null;
+			VideoFrame.third = null;
+		} else {
+			int x = 0;
+			int y = 0;
+			for (ResultPoint rp : result.getResultPoints()){
+				x += rp.getX();
+				y += rp.getY();
 			}
-			if(result == null){
-				VideoFrame.first = null;
-				VideoFrame.second = null;
-				VideoFrame.third = null;
-				continue;
-			} else {
-				System.out.println("Found qr at threshold: "+i);
-				System.out.println("Qr with text is: "+result.getText());
-				int x = 0;
-				int y = 0;
-				for (ResultPoint rp : result.getResultPoints()){
-					x += rp.getX();
-					y += rp.getY();
-				}
-				x = (int) (x/result.getResultPoints().length);
-				y = (int) (y/result.getResultPoints().length);
-//				qrt = qrText;
-				System.out.println("moving");
-				boolean move = CircleARObject.moveBasedOnLocation(drone, x, y, false, BasicController.SEARCHQR);
-				if(move){
-					return 1;
-				} else{
-					return 0;
-				}
-				//return false;
+			x = (int) (x/result.getResultPoints().length);
+			y = (int) (y/result.getResultPoints().length);
+
+			boolean move = CircleARObject.moveBasedOnLocation(drone, x, y, false, BasicController.SEARCHQR);
+			if(move){
+				return 1;
+			} else{
+				return 0;
 			}
-		
+		}
 		return -1;
 	}
 	
 	public Result getQRResult(Mat frame) throws ChecksumException{
-		String qrt = "";
-		Mat temp = new Mat();
-		frame.copyTo(temp);
-		Imgproc.cvtColor(temp, temp, Imgproc.COLOR_RGB2GRAY);
-		Imgproc.threshold(temp, temp, 100, 255, Imgproc.THRESH_BINARY);
+		Mat tempImage = new Mat();
+		frame.copyTo(tempImage);
 		
-		BufferedImage image = toBufferedImage(temp);
+		Imgproc.cvtColor(tempImage, tempImage, Imgproc.COLOR_RGB2GRAY);
+		Imgproc.threshold(tempImage, tempImage, 100, 255, Imgproc.THRESH_BINARY);
+		
+		BufferedImage image = Toolkit.MatToBufferedImage(tempImage, BufferedImage.TYPE_BYTE_GRAY);
+
 		VideoFrame.img2 = image;
 		
 		Result result = null;
@@ -104,7 +96,7 @@ public class CustomQRScanner {
 			ResultPoint a = points[1]; // top-left
 			ResultPoint b = points[2]; // top-right
 			
-			// Find the degree of the rotation (needed e.g. for auto control)
+			
 			double theta = 0;
 			double zdist = Math.abs(a.getX() - b.getX());
 			double xdist = Math.abs(a.getY() - b.getY());
@@ -113,25 +105,18 @@ public class CustomQRScanner {
 			Values.THETA = measureAngle(result);
 			Values.DISTANCE = measureDistance((float) zdist);
 		
-			
 			x = (int) (x/result.getResultPoints().length);
 			y = (int) (y/result.getResultPoints().length);
 			qrt += "," + x + "," + y;
+			
 		} catch (NotFoundException e) {
 		} catch (FormatException e) {
 		}
-		
 		return result;
 	}
 	
-
-
-	
 	public double measureDistance(float pixels){
-		
-		
-		return Values.REALWIDTH * (Values.FOCAL / pixels);
-		
+		return Values.REALWIDTH * (Values.FOCAL / pixels);	
 	}
 	
 	public double measureAngle(Result result){
@@ -140,12 +125,13 @@ public class CustomQRScanner {
 		
 		float bottomLeftX = points[0].getX();
 		float bottomLeftY = points[0].getY();
-		VideoFrame.first = new Point((int)bottomLeftX,(int)bottomLeftY);
 		float topLeftX = points[1].getX();
 		float topLeftY = points[1].getY();
-		VideoFrame.second = new Point((int)topLeftX, (int)topLeftY);
 		float topRightX = points[2].getX();
 		float topRightY = points[2].getY();
+		
+		VideoFrame.first = new Point((int)bottomLeftX,(int)bottomLeftY);
+		VideoFrame.second = new Point((int)topLeftX, (int)topLeftY);
 		VideoFrame.third = new Point((int)topRightX, (int)topRightY);
 		
 		float leftSide = (bottomLeftY - topLeftY);
@@ -157,9 +143,5 @@ public class CustomQRScanner {
 				/(2*leftSide*topSide))* (180 / Math.PI);;
 		
 		return angle;
-		
 	}
-	
-	
-	
 }

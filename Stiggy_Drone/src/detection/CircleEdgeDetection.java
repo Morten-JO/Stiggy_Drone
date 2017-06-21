@@ -36,8 +36,8 @@ public class CircleEdgeDetection {
 			if(gg != null){
 			    Mat gray = new Mat();
 			    Imgproc.cvtColor(gg, gray, Imgproc.COLOR_BGR2GRAY);
-			    //Imgproc.blur(gray, gray, new Size(3, 3));
 			    Imgproc.GaussianBlur(gray, gray, new Size(9,9), 2,2);
+			    
 			    Mat edges = new Mat();
 			    int lowThreshold = threshold;
 			    int ratio = 3;
@@ -46,8 +46,10 @@ public class CircleEdgeDetection {
 			    
 			    Mat circles = new Mat();
 			    Vector<Mat> circlesList = new Vector<Mat>();
+			    
 			    Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 1, gray.rows()/8, 600, 50, 60, 200);
 			    List<MatOfPoint> removedContoursList = new ArrayList<MatOfPoint>(); 
+			    
 			    for (int id=0;id<circlesList.size();id++){                     
 		            MatOfPoint2f mop2f = new MatOfPoint2f();
 		            circlesList.get(id).convertTo(mop2f,CvType.CV_32F);
@@ -84,7 +86,7 @@ public class CircleEdgeDetection {
 			    BufferedImage img2 = null;
 			    img2 = Toolkit.MatToBufferedImage(edges, BufferedImage.TYPE_BYTE_GRAY);
 			    if(img2 == null){
-			    	System.out.println("IMGI IS NULL");
+			    	System.out.println("Image is null");
 			    } else{
 			    	VideoFrame.img2 = img2;
 			    }

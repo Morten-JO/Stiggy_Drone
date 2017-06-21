@@ -6,8 +6,6 @@ import org.opencv.core.KeyPoint;
 
 import centering.CircleARObject;
 import de.yadrone.base.ARDrone;
-import de.yadrone.base.command.CalibrationCommand;
-import de.yadrone.base.command.Device;
 import de.yadrone.base.command.UltrasoundFrequency;
 import de.yadrone.base.navdata.Altitude;
 import de.yadrone.base.navdata.AltitudeListener;
@@ -65,10 +63,6 @@ public class BasicController {
 	private boolean fineWithLeft = true;
 	private boolean justStrayed = false;
 	
-	//Just circle things
-	private boolean gotSteady = false;
-	private int steadyTries = 0;
-	
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
 		qrScanner = new CustomQRScanner();
@@ -117,7 +111,6 @@ public class BasicController {
 								currentState = RESTART;
 							}
 							oldalti = alti;
-							movement.getDrone().getCommandManager().flatTrim();
 							movement.getDrone().getCommandManager().takeOff().doFor(5000);
 							movement.getDrone().getCommandManager().hover().doFor(1500);
 							currentState = INAIR;
@@ -131,7 +124,6 @@ public class BasicController {
 							}
 							break;
 						case SEARCHQR:
-							
 							movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							int qrResult = qrScanner.findQR(Toolkit.bufferedImageToMat(imgi),movement.getDrone(), currentlySearchingForQr);
 							if(qrResult == 1){
@@ -162,7 +154,6 @@ public class BasicController {
 								triesBeforeSpin = 0;
 								triesBeforeStray = 0;
 							} else{
-								//Checksumexception
 								triesBeforeStray++;
 								if(triesBeforeStray > 30){
 									triesBeforeStray = 0;
@@ -186,9 +177,8 @@ public class BasicController {
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false, currentState)){
-									
-									System.out.println("Switched to flythrough state.");
-									currentState = FLYTHROUGH; // just to land
+									System.out.println("Switched to state: FLYTHROUGH");
+									currentState = FLYTHROUGH;
 									movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 									privateTimer = System.currentTimeMillis();
 								} 
@@ -210,12 +200,7 @@ public class BasicController {
 							System.out.println("ERROR END");
 							Main.closeDrone();
 							break;
-						case TEST:
-							currentState = ERROR;
-							break;
 						case STRAY:
-							System.out.println("Its stray state.");
-							//Should only be applied if spin couldnt do jack
 							if(fineWithLeft){
 								System.out.println("Fine with going left.");
 								movement.getDrone().getCommandManager().goLeft(Values.BASE_SPEED).doFor(200);
@@ -229,7 +214,6 @@ public class BasicController {
 							currentState = oldState;
 							break;
 						case SPIN:
-							System.out.println("Its spin state.");
 							movement.getDrone().getCommandManager().spinRight(Values.BASE_SPEED).doFor(350);
 							movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							currentState = oldState;
@@ -240,7 +224,6 @@ public class BasicController {
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -248,7 +231,6 @@ public class BasicController {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
