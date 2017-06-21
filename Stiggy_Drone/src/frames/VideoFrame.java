@@ -98,7 +98,6 @@ public class VideoFrame extends JFrame implements Runnable{
         g2.setStroke(new BasicStroke(5));
 	    if(point != null){
 	    	g.drawRect(320-25, 180-25, 50, 50);
-	    	//g.drawOval((int)(point.pt.x), (int)(point.pt.y), back, back);
 	    	for(int i = 0; i < point.length; i++){
 	    		if(point[i] != null){
 	    			int back = (int)(point[i].size/2*1.3);
@@ -124,7 +123,7 @@ public class VideoFrame extends JFrame implements Runnable{
 		case 3:
 			return "Search QR";
 		case 6:
-			return "Branner";
+			return "FLYUP";
 		case 7:
 			return "Circledetection";
 		case 8:

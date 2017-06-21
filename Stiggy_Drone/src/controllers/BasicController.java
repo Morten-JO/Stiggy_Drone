@@ -31,7 +31,7 @@ public class BasicController {
 	public static final int ONGROUND = 1;
 	public static final int INAIR = 2;
 	public static final int SEARCHQR = 3;
-	public static final int BRANNER = 6;
+	public static final int FLYUP = 6;
 	public static final int CIRCLEEDGEDETECTION = 7;
 	public static final int FLYTHROUGH = 8;
 	public static final int CHECKFLOWN = 9;
@@ -89,15 +89,7 @@ public class BasicController {
 		drone.getCommandManager().setUltrasoundFrequency(UltrasoundFrequency.F25Hz);
 		drone.getCommandManager().setVideoCodecFps(15);
 		drone.getCommandManager().setVideoBitrate(1000);
-		
-		//drone.getCommandManager().setSSIDSinglePlayer("testflight MonkaS");
-		/*
-		drone.getCommandManager().setFlyingMode(FlyingMode.FREE_FLIGHT);
-		drone.getCommandManager().setVideoCodecFps(20);
-		
-		
-		drone.getCommandManager().setVideoCodec(VideoCodec.H264_360P);
-		*/
+	
 	}
 	
 	public void updateImg(BufferedImage img1){
@@ -127,7 +119,6 @@ public class BasicController {
 							oldalti = alti;
 							movement.getDrone().getCommandManager().flatTrim();
 							movement.getDrone().getCommandManager().takeOff().doFor(5000);
-							//movement.getDrone().getCommandManager().setCommand(new CalibrationCommand(Device.MAGNETOMETER));
 							movement.getDrone().getCommandManager().hover().doFor(1500);
 							currentState = INAIR;
 							break;
@@ -140,54 +131,17 @@ public class BasicController {
 							}
 							break;
 						case SEARCHQR:
-							/*
-							movement.getDrone().getCommandManager().hover().doFor(1000);
-							int morten = SimpleQR.moveQR(imgi, movement.getDrone());
-							System.out.println("Morten is: "+morten);
 							
-							if(morten == 1){
-								System.out.println("Switched to state : CIRCLEDETECTION!");
-								currentState = BRANNER;
-							} else if(morten == -1){
-								triesBeforeSpin++;
-								if(triesBeforeSpin > 10){
-									triesBeforeSpin = 0;
-									triesBeforeStray = 0;
-									currentState = SPIN;
-									oldState = SEARCHQR;
-									if(justStrayed){
-										justStrayed = false;
-										fineWithLeft = false;
-										currentState = STRAY;
-									}
-								}
-							} else if(morten == 0){
-								if(justStrayed){
-									justStrayed = false;
-									fineWithLeft = true;
-								}
-								triesBeforeSpin = 0;
-								triesBeforeStray = 0;
-							} else{
-								//Checksumexception
-								triesBeforeStray++;
-								if(triesBeforeStray > 10){
-									triesBeforeStray = 0;
-									triesBeforeSpin = 0;
-									currentState = STRAY;
-									oldState = SEARCHQR;
-								}
-							}*/
 							movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
-							int jensen = qrScanner.applyFilters(Toolkit.bufferedImageToMat(imgi),movement.getDrone(), currentlySearchingForQr);
-							if(jensen == 1){
+							int qrResult = qrScanner.findQR(Toolkit.bufferedImageToMat(imgi),movement.getDrone(), currentlySearchingForQr);
+							if(qrResult == 1){
 								System.out.println("Switched to state : CIRCLEDETECTION!");
 								VideoFrame.first = null;
 								VideoFrame.second = null;
 								VideoFrame.third = null;
-								currentState = BRANNER;
+								currentState = FLYUP;
 								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
-							} else if(jensen == -1){
+							} else if(qrResult == -1){
 								triesBeforeSpin++;
 								if(triesBeforeSpin > 30){
 									triesBeforeSpin = 0;
@@ -200,7 +154,7 @@ public class BasicController {
 										currentState = STRAY;
 									}
 								}
-							} else if(jensen == 0){
+							} else if(qrResult == 0){
 								if(justStrayed){
 									justStrayed = false;
 									fineWithLeft = true;
@@ -218,7 +172,7 @@ public class BasicController {
 								}
 							}
 							break;
-						case BRANNER:
+						case FLYUP:
 							if(alti < 1700){
 								movement.getDrone().getCommandManager().up(Values.BASE_SPEED).doFor(300);
 								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
@@ -232,27 +186,13 @@ public class BasicController {
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false, currentState)){
-									/*gotSteady = true;
-									steadyTries = 0;
-									movement.getDrone().getCommandManager().forward(Values.BASE_SPEED).doFor(350);
-									movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
-									*/
+									
 									System.out.println("Switched to flythrough state.");
 									currentState = FLYTHROUGH; // just to land
 									movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 									privateTimer = System.currentTimeMillis();
 								} 
-							} /* else if(gotSteady){
-								steadyTries++;
-								if(steadyTries > 4){
-									System.out.println("Switched to flythrough state.");
-									currentState = FLYTHROUGH; // just to land
-									movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
-									privateTimer = System.currentTimeMillis();
-									steadyTries = 0;
-								}
-							}
-							*/
+							} 
 							break;
 						case FLYTHROUGH:
 							movement.getDrone().getCommandManager().forward(Values.BASE_SPEED);

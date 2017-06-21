@@ -77,15 +77,14 @@ public class CircleEdgeDetection {
 			    	pointToReturn = points[i];
 			    	
 			    }
-			    
-			   // mgproc.circle(gg, new Point(,210), 10, new Scalar(100,10,10),3); 
+			     
 			    for (int i = 0; i < points.length; i++) {
 					Imgproc.circle(edges, new Point(points[i].pt.x, points[i].pt.y), (int)points[i].size,new Scalar(100,10,10),3);
 				}
 			    BufferedImage img2 = null;
 			    img2 = Toolkit.MatToBufferedImage(edges, BufferedImage.TYPE_BYTE_GRAY);
 			    if(img2 == null){
-			    	System.out.println("IMGI IS FUCKING NULL");
+			    	System.out.println("IMGI IS NULL");
 			    } else{
 			    	VideoFrame.img2 = img2;
 			    }
