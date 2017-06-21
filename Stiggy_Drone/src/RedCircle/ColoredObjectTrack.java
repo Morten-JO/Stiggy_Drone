@@ -14,14 +14,16 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;  
+import org.opencv.imgproc.Imgproc;
+
+import helpers.Toolkit;  
 /*
  * Lavet med hjælp fra : https://stackoverflow.com/questions/43820441/track-specific-color-in-a-video-with-opencv-java
  */
 
 public class ColoredObjectTrack {  
   public Mat getCircle(BufferedImage image){  
-	Mat img =  bufferedImageToMat(image);
+	Mat img =  Toolkit.bufferedImageToMat(image);
   
 	  System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
    
@@ -43,7 +45,7 @@ public class ColoredObjectTrack {
     double[] data=new double[3];  
     
         
-         Imgproc.cvtColor(inputImage, hsv_image, Imgproc.COLOR_BGR2HSV);  
+         Imgproc.cvtColor(inputImage, hsvImgi, Imgproc.COLOR_BGR2HSV);  
          Core.inRange(hsvImgi, hsv_min, hsv_max, thresholdValue1);           
          Core.inRange(hsvImgi, hsv_min2, hsv_max2, thresholdValue2);  
          Core.bitwise_or(thresholdValue1, thresholdValue2, thresholdValue1);  
@@ -72,7 +74,7 @@ public class ColoredObjectTrack {
           int elemSize = (int)circlesInImgi.elemSize();  
           float[] data2 = new float[rows * elemSize/4];  
           if (data2.length>0){  
-            circlesInImgi.get(0, 0, data2); / 
+            circlesInImgi.get(0, 0, data2); 
                            
             for(int i=0; i<data2.length; i=i+3) {  
               Point center= new Point(data2[i], data2[i+1]);  
@@ -85,7 +87,7 @@ public class ColoredObjectTrack {
           }  
           Imgproc.line(hsvImgi, new Point(150,50), new Point(202,200), new Scalar(100,10,10), 3);  
           Imgproc.circle(hsvImgi, new Point(210,210), 10, new Scalar(100,10,10),3);  
-         data=hsv_image.get(210, 210);  
+         data=hsvImgi.get(210, 210);  
          Imgproc.putText(hsvImgi,String.format("("+String.valueOf(data[0])+","+String.valueOf(data[1])+","+String.valueOf(data[2])+")"),new Point(30, 30) , 3 //FONT_HERSHEY_SCRIPT_SIMPLEX  
               ,1.0,new Scalar(100,10,10,255),3);  
          distance.convertTo(distance, CvType.CV_8UC1);  
