@@ -248,21 +248,21 @@ public class VideoFrame extends JFrame implements Runnable{
 			public void keyPressed(KeyEvent e) {
 				final IARDrone temp = drone;
 				if(e.getKeyCode() == KeyEvent.VK_LEFT){
-					temp.getCommandManager().goLeft(speed);						
+					temp.getCommandManager().goLeft(speed).doFor(500);						
 				} else if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-					temp.getCommandManager().goRight(speed);
+					temp.getCommandManager().goRight(speed).doFor(500);
 				} else if(e.getKeyCode() == KeyEvent.VK_UP){
-					temp.getCommandManager().forward(speed);
+					temp.getCommandManager().forward(speed).doFor(500);
 				} else if(e.getKeyCode() == KeyEvent.VK_DOWN){
-					temp.getCommandManager().backward(speed);
+					temp.getCommandManager().backward(speed).doFor(500);
 				} else if(e.getKeyCode() == KeyEvent.VK_A){
-					temp.getCommandManager().spinLeft(70);
+					temp.getCommandManager().spinLeft(70).doFor(500);
 				} else if(e.getKeyCode() == KeyEvent.VK_S){
-					temp.getCommandManager().down(speed);
+					temp.getCommandManager().down(speed).doFor(500);
 				} else if(e.getKeyCode() == KeyEvent.VK_D){
-					temp.getCommandManager().spinRight(70);						
+					temp.getCommandManager().spinRight(70).doFor(500);						
 				} else if(e.getKeyCode() == KeyEvent.VK_W){
-					temp.getCommandManager().up(speed);
+					temp.getCommandManager().up(speed).doFor(500);
 				} else if(e.getKeyCode() == KeyEvent.VK_O){
 					BasicController.currentState = BasicController.ONGROUND;
 				}

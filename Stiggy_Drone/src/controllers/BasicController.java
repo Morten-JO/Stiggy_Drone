@@ -51,7 +51,7 @@ public class BasicController {
 	
 	private int tries = 0;
 	
-	private String currentlySearchingForQr = "W01.00";
+	private String currentlySearchingForQr = "W00.00";
 	
 	public boolean imageUpdated = false;
 	
@@ -67,6 +67,7 @@ public class BasicController {
 	
 	//Just circle things
 	private boolean gotSteady = false;
+	private int steadyTries = 0;
 	
 	public BasicController(ARDrone drone){
 		this.movement = new BasicMovements(drone);
@@ -126,7 +127,7 @@ public class BasicController {
 							oldalti = alti;
 							movement.getDrone().getCommandManager().flatTrim();
 							movement.getDrone().getCommandManager().takeOff().doFor(5000);
-							movement.getDrone().getCommandManager().setCommand(new CalibrationCommand(Device.MAGNETOMETER));
+							//movement.getDrone().getCommandManager().setCommand(new CalibrationCommand(Device.MAGNETOMETER));
 							movement.getDrone().getCommandManager().hover().doFor(1500);
 							currentState = INAIR;
 							break;
@@ -231,21 +232,32 @@ public class BasicController {
 							KeyPoint point = CircleEdgeDetection.checkForCircle(imgi, this);
 							if(point != null){
 								if(CircleARObject.moveBasedOnLocation(movement.getDrone(), point.pt.x, point.pt.y, false, currentState)){
-									gotSteady = true;
-									movement.getDrone().getCommandManager().forward(Values.BASE_SPEED).doFor(200);
+									/*gotSteady = true;
+									steadyTries = 0;
+									movement.getDrone().getCommandManager().forward(Values.BASE_SPEED).doFor(350);
 									movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
+									*/
+									System.out.println("Switched to flythrough state.");
+									currentState = FLYTHROUGH; // just to land
+									movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
+									privateTimer = System.currentTimeMillis();
 								} 
-							}  else if(gotSteady){
-								System.out.println("Switched to flythrough state.");
-								currentState = FLYTHROUGH; // just to land
-								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
-								privateTimer = System.currentTimeMillis();
+							} /* else if(gotSteady){
+								steadyTries++;
+								if(steadyTries > 4){
+									System.out.println("Switched to flythrough state.");
+									currentState = FLYTHROUGH; // just to land
+									movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
+									privateTimer = System.currentTimeMillis();
+									steadyTries = 0;
+								}
 							}
+							*/
 							break;
 						case FLYTHROUGH:
 							movement.getDrone().getCommandManager().forward(Values.BASE_SPEED);
-							if((System.currentTimeMillis()-privateTimer) > 2000){
-								currentState = FINISH;
+							if((System.currentTimeMillis()-privateTimer) > 2500){
+								currentState = CIRCLEEDGEDETECTION;
 								movement.getDrone().getCommandManager().hover().doFor(Values.BASE_SLEEP);
 							}
 							break;

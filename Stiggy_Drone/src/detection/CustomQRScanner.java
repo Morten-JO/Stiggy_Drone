@@ -49,11 +49,12 @@ public class CustomQRScanner {
 				continue;
 			} else {
 				System.out.println("Found qr at threshold: "+i);
-				if(!result.getText().equals(currentQrToFind)){
+				System.out.println("Qr with text is: "+result.getText());
+				/*if(!result.getText().equals(currentQrToFind)){
 					System.out.println("Not correct QR code, found QR was: "+result.getText()+" | "+currentQrToFind);
 					wrongQr = true;
 					continue;
-				}
+				}*/
 				int x = 0;
 				int y = 0;
 				for (ResultPoint rp : result.getResultPoints()){
